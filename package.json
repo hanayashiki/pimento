@@ -8,13 +8,21 @@
     "start": "next start",
     "lint": "next lint"
   },
-  "dependencies": {
+  "devDependencies": {
     "@types/node": "20.1.2",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
-    "autoprefixer": "10.4.14",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.1",
+    "prettier": "^2.7.1",
     "eslint": "8.40.0",
-    "eslint-config-next": "13.4.1",
+    "eslint-config-next": "13.4.1"
+  },
+  "dependencies": {
+    "autoprefixer": "10.4.14",
     "next": "13.4.1",
     "postcss": "8.4.23",
     "react": "18.2.0",
