@@ -1,26 +1,30 @@
 "use client";
 
 import { cx } from "classix";
+import Link from "next/link";
 
-import { loginInOrSignUp } from "@/app/_actions";
-import { useAction } from "@/lib/action";
+import { createAccount } from "@/app/_actions";
+import { useAction } from "@/lib/action/client";
 
-export default function LoginForm() {
-  const { errors, loading, clearErrors, execute } = useAction(loginInOrSignUp);
+export default function CreateAccountForm() {
+  const { formErrors, loading, clearErrors, execute } =
+    useAction(createAccount);
 
   return (
     <form
       className="flex flex-col card bg-gray-800 shadow-xl"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.stopPropagation();
         e.preventDefault();
 
-        execute({
+        await execute({
           email: (document.getElementById("email") as HTMLInputElement).value,
           inputPassword: (
             document.getElementById("inputPassword") as HTMLInputElement
           ).value,
         });
+
+        location.href = "/dashboard";
       }}
       action="#"
     >
@@ -34,16 +38,16 @@ export default function LoginForm() {
 
       <div className="card-body">
         <input
-          className={cx("input", errors?.email && "input-error")}
+          className={cx("input", formErrors?.email && "input-error")}
           placeholder="Email"
           type="email"
           name="email"
           id="email"
           onChange={clearErrors}
         />
-        <div className="text-error text-xs">{errors?.email?._errors}</div>
+        <div className="text-error text-xs">{formErrors?.email?._errors}</div>
         <input
-          className={cx("input", errors?.inputPassword && "input-error")}
+          className={cx("input", formErrors?.inputPassword && "input-error")}
           placeholder="Password"
           type="password"
           name="inputPassword"
@@ -51,12 +55,19 @@ export default function LoginForm() {
           onChange={clearErrors}
         />
         <div className="text-error text-xs">
-          {errors?.inputPassword?._errors}
+          {formErrors?.inputPassword?._errors}
+        </div>
+
+        <div className="text-primary font-bold text-sm">
+          Already registered?{" "}
+          <Link className="underline" href="login">
+            Log In
+          </Link>
         </div>
 
         <div className="card-actions justify-center mt-4">
           <button className={cx("btn btn-accent", loading && "loading")}>
-            Log In or Sign Up
+            Create Account
           </button>
         </div>
       </div>

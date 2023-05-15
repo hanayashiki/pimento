@@ -1,16 +1,41 @@
 "use server";
 
-import { Result } from "@monoid-dev/ts-utils";
+import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { cookies } from "next/headers";
+import { z } from "zod";
 
-import { FormAction } from "@/lib/action";
-import { LoginUser } from "@/lib/models";
+import { createAction } from "@/lib/action/server";
+import { AppError } from "@/lib/errors";
+import { CreateUser, LoginUser } from "@/lib/models";
+import { Service } from "@/lib/server/Service";
+import { UserService } from "@/lib/server/UserService";
 
-export const loginInOrSignUp: FormAction<LoginUser, true> = async (
-  data: LoginUser,
-) => {
-  const validated = LoginUser.safeParse(data);
+export const login = createAction({ input: LoginUser }, async (data) => {
+  const userService = Service.get(UserService);
 
-  if (!validated.success) return Result.ofLeft(validated.error.format());
+  const loginResponse = await userService.login(data);
+  (cookies() as RequestCookies).set("token", loginResponse.token);
 
-  return Result.ofRight(true);
-};
+  return await userService.findUserByEmail(data.email);
+});
+
+export const createAccount = createAction(
+  { input: CreateUser },
+  async (data) => {
+    const userService = Service.get(UserService);
+
+    const user = await userService.createUser(data);
+
+    const loginResponse = await userService.login(data);
+    (cookies() as RequestCookies).set("token", loginResponse.token);
+
+    return user;
+  },
+);
+
+export const testThrowError = createAction({ input: z.unknown() }, async () => {
+  throw new AppError({
+    code: "NOT_AUTHORIZED",
+    message: "114514",
+  });
+});

@@ -2,12 +2,11 @@
 
 ## Pages
 
-### /
+### /dashboard
 
 + Top
   + Logo
-  + Search
-  + Create Button
+  + Navigations
   + User
     + Log out
     + Settings
