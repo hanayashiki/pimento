@@ -25,7 +25,7 @@ export default async function RootLayout({
 
   return (
     <MeProvider value={{ me }}>
-      <html lang="en" data-theme="emerald">
+      <html lang="en" data-theme="dark">
         <body className={inter.className}>
           <main className="min-h-screen h-screen">{children}</main>
         </body>

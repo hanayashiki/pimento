@@ -1,6 +1,15 @@
 import { z } from "zod";
 
-import { defineModel } from "@/lib/server/Storage";
+import { Sensitive } from "./Sensitive";
+import { ZodAnyObject } from "./types";
+import { ForeignKeyMap, Model } from "@/lib/server/Storage";
+
+export const defineModel = <
+  S extends ZodAnyObject = ZodAnyObject,
+  FK extends ForeignKeyMap = {},
+>(
+  model: Model<S, FK>,
+) => model;
 
 export const UserFields = z.object({
   id: z.number(),
@@ -57,11 +66,10 @@ export const UserModel = defineModel({
   do: UserDO,
   pk: "id",
   uniqueIndices: ["email"],
+  fks: {},
 });
 
-export const sensitive = z.string().brand("sensitive");
-
-export const BasePassword = z.object({
+export const BasePasswordDO = z.object({
   id: z.number(),
   user_id: z.number(), // FK
   url: z.string(),
@@ -69,14 +77,61 @@ export const BasePassword = z.object({
   updated_at: z.string().datetime(),
 });
 
-export const Password = z.discriminatedUnion("type", [
-  BasePassword.extend({
-    type: z.literal("TEXT"),
-    text: sensitive,
-  }),
-  BasePassword.extend({
-    type: z.literal("USERNAME_PASSWORD"),
-    username: sensitive,
-    password: sensitive,
-  }),
-]);
+export const TextPasswordDO = BasePasswordDO.extend({
+  type: z.literal("TEXT"),
+  text: Sensitive,
+});
+
+export type TextPasswordDO = z.infer<typeof TextPasswordDO>;
+
+export const CreateTextPassword = TextPasswordDO.pick({
+  url: true,
+  type: true,
+  text: true,
+});
+
+export type CreateTextPassword = z.infer<typeof CreateTextPassword>;
+
+export const TextPasswordModel = defineModel({
+  name: "TextPassword",
+  do: TextPasswordDO,
+  pk: "id",
+  uniqueIndices: [],
+  fks: {
+    user_id: UserModel,
+  },
+});
+
+export const AccountPassword = BasePasswordDO.extend({
+  type: z.literal("TEXT"),
+  username: Sensitive,
+  password: Sensitive,
+});
+
+export type AccountPassword = z.infer<typeof AccountPassword>;
+
+export const AccountPasswordModel = defineModel({
+  name: "AccountPassword",
+  do: AccountPassword,
+  pk: "id",
+  uniqueIndices: [],
+  fks: {
+    user_id: UserModel,
+  },
+});
+
+export type PasswordDefinition = {
+  name: string;
+  label: string;
+};
+
+export const passwordDefinitions = [
+  {
+    name: "TextPassword",
+    label: "text",
+  },
+  {
+    name: "AccountPassword",
+    label: "account",
+  },
+] as const satisfies readonly PasswordDefinition[];

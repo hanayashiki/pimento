@@ -1,5 +1,9 @@
 # Design
 
+## Redis Database
+
+
+
 ## Pages
 
 ### /dashboard

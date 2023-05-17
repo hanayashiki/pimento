@@ -26,11 +26,11 @@ export default function LoginForm() {
       }}
       action="#"
     >
-      <div className="text-primary text-3xl font-bold pt-8 flex justify-center items-center">
+      <div className="text-accent text-3xl font-bold pt-8 flex justify-center items-center">
         Pimento
       </div>
 
-      <div className="text-center text-primary opacity-60">
+      <div className="text-center text-accent opacity-60">
         Simple Password Manager
       </div>
 
@@ -56,7 +56,7 @@ export default function LoginForm() {
           {formErrors?.inputPassword?._errors}
         </div>
 
-        <div className="text-primary font-bold text-sm">
+        <div className="text-accent font-bold text-sm">
           Don't have one?{" "}
           <Link href="create-account" className="underline">
             Create Account
@@ -64,7 +64,7 @@ export default function LoginForm() {
         </div>
 
         <div className="card-actions justify-center mt-4">
-          <button className={cx("btn btn-accent", loading && "loading")}>
+          <button className={cx("btn btn-primary", loading && "loading")}>
             Log In
           </button>
         </div>

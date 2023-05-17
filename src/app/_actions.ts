@@ -1,7 +1,9 @@
 "use server";
 
+import { errors } from "jose";
 import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { createAction } from "@/lib/action/server";
@@ -39,3 +41,21 @@ export const testThrowError = createAction({ input: z.unknown() }, async () => {
     message: "114514",
   });
 });
+
+export const redirectToDashboardOrLogin = async () => {
+  const token = cookies().get("token");
+
+  if (token) {
+    try {
+      await Service.get(UserService).verifyToken(token.value);
+      redirect("/dashboard");
+    } catch (e) {
+      if (typeof e === "object" && e instanceof errors.JOSEError) {
+        redirect("/login");
+      }
+      throw e;
+    }
+  } else {
+    redirect("/login");
+  }
+};

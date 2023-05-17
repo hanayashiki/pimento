@@ -95,13 +95,17 @@ export class UserService extends Service {
   }
 
   async getMeByToken(token: string) {
-    const { payload } = await jose.jwtVerify(
-      token,
-      new TextEncoder().encode(env.APP_SECRET),
-    );
+    const { payload } = await this.verifyToken(token);
 
     const { id } = payload;
 
     return await this.findUserById(Number(id));
+  }
+
+  async verifyToken(token: string) {
+    return await jose.jwtVerify(
+      token,
+      new TextEncoder().encode(env.APP_SECRET),
+    );
   }
 }

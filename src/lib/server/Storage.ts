@@ -1,5 +1,5 @@
 import { VercelKV, createClient } from "@vercel/kv";
-import { pipe, reduce } from "remeda";
+import { pipe } from "remeda";
 import { z } from "zod";
 
 import { env } from "@/lib/env";
@@ -7,19 +7,28 @@ import { ZodAnyObject } from "@/lib/types";
 
 export type ModelFields<S extends ZodAnyObject> = keyof S["shape"] & string;
 
-export interface Model<in out S extends ZodAnyObject = ZodAnyObject> {
+export type ForeignKeyMap = Record<string, AnyModel>;
+
+export interface Model<
+  in out S extends ZodAnyObject = ZodAnyObject,
+  FK extends ForeignKeyMap = {},
+> {
   name: string;
   do: S;
   pk: ModelFields<S>;
   uniqueIndices: ModelFields<S>[];
+  fks: FK;
 }
 
-export type AnyModel = Model<any>;
+export type AnyModel = Model<any, ForeignKeyMap>;
 
 export type AnyData = Record<string, any>;
 
-export const defineModel = <S extends ZodAnyObject = ZodAnyObject>(
-  model: Model<S>,
+export const defineModel = <
+  S extends ZodAnyObject = ZodAnyObject,
+  FK extends ForeignKeyMap = {},
+>(
+  model: Model<S, FK>,
 ) => model;
 
 export class ErrorPk extends Error {
@@ -60,6 +69,19 @@ export class StorageHelpers {
   static getSequenceName(model: AnyModel, sequenceName: string) {
     return `${model.name}__sequence:${sequenceName}`;
   }
+
+  static getFkKeyName(
+    oneModel: AnyModel,
+    manyModel: AnyModel,
+    fkName: string,
+    manyModelPkValue: any,
+  ) {
+    if (!(fkName in manyModel.do.shape)) {
+      throw new Error(`${fkName} not found on model ${manyModel.name}`);
+    }
+
+    return `${oneModel.name}__fk:${manyModel.name}:${fkName}:${manyModelPkValue}`;
+  }
 }
 
 export class Storage {
@@ -76,8 +98,8 @@ export class Storage {
     await this.kv.flushall();
   }
 
-  async createObject<S extends ZodAnyObject>(
-    model: Model<S>,
+  async createObject<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
+    model: Model<S, FK>,
     data: z.infer<Model<S>["do"]>,
   ) {
     const pkValue = data[model.pk];
@@ -87,19 +109,34 @@ export class Storage {
     await this.checkUniqueness(model, data);
 
     await pipe(
-      model.uniqueIndices,
-      reduce(
-        (p, uniqueIndex) =>
-          p.set(
-            StorageHelpers.getUniqueIndexKeyName(
-              model,
-              uniqueIndex,
-              data[uniqueIndex],
+      this.kv.pipeline(),
+      (p) =>
+        model.uniqueIndices.reduce(
+          (p, uniqueIndex) =>
+            p.set(
+              StorageHelpers.getUniqueIndexKeyName(
+                model,
+                uniqueIndex,
+                data[uniqueIndex],
+              ),
+              pkValue,
             ),
-            pkValue,
-          ),
-        this.kv.pipeline(),
-      ),
+          p,
+        ),
+      (p) =>
+        Object.entries(model.fks).reduce(
+          (p, [fkName, oneModel]) =>
+            p.sadd(
+              StorageHelpers.getFkKeyName(
+                oneModel,
+                model,
+                fkName,
+                data[fkName],
+              ),
+              pkValue,
+            ),
+          p,
+        ),
       (p) => p.hset(StorageHelpers.getPkKeyName(model, pkValue), data),
       (p) => p.exec(),
     );
