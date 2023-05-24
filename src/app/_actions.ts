@@ -11,7 +11,12 @@ import { z } from "zod";
 
 import { createAction } from "@/lib/action/server";
 import { AppError } from "@/lib/errors";
-import { CreateUser, LoginUser, PasswordSearch } from "@/lib/models";
+import {
+  CreateTextPassword,
+  CreateUser,
+  LoginUser,
+  PasswordSearch,
+} from "@/lib/models";
 import { PasswordService } from "@/lib/server/PasswordService";
 import { Service } from "@/lib/server/Service";
 import { UserService } from "@/lib/server/UserService";
@@ -89,5 +94,15 @@ export const listTextPasswords = createAction(
     const passwordService = Service.get(PasswordService);
 
     return await passwordService.listTextPasswords(user, input);
+  },
+);
+
+export const createTextPassword = createAction(
+  { input: CreateTextPassword },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return passwordService.createTextPassword(user, input);
   },
 );

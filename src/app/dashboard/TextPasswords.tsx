@@ -4,7 +4,9 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { VscAdd } from "react-icons/vsc";
 
+import { TextPasswordDialog } from "./TextPasswordDialog";
 import { listTextPasswords } from "../_actions";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
 import { PasswordSearch } from "@/lib/models";
@@ -13,6 +15,8 @@ const TextPasswords = () => {
   const params = useSearchParams();
 
   const [search, setSearch] = useState("");
+
+  const [addOpen, setAddOpen] = useState(false);
 
   const passwordSearch: PasswordSearch = {
     search,
@@ -31,7 +35,7 @@ const TextPasswords = () => {
 
   return (
     <div className="overflow-x-auto">
-      <div className="form-control mb-8">
+      <div className="mb-8 flex gap-x-4">
         <input
           type="text"
           placeholder="Search here"
@@ -39,6 +43,10 @@ const TextPasswords = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+
+        <button onClick={() => setAddOpen(true)}>
+          <VscAdd />
+        </button>
       </div>
 
       <table
@@ -90,6 +98,8 @@ const TextPasswords = () => {
             ))}
         </tbody>
       </table>
+
+      <TextPasswordDialog open={addOpen} onClose={() => setAddOpen(false)} />
     </div>
   );
 };
