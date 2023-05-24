@@ -1,49 +1,20 @@
-"use client";
+import { dehydrate } from "@tanstack/query-core";
 
-import { cx } from "classix";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import Tabs from "./Tabs";
+import { listTextPasswords } from "../_actions";
+import getQueryClient from "../getQueryClient";
+import Hydrate from "@/lib/client/Hydrate";
 
-import { passwordDefinitions } from "@/lib/models";
+export default async function Page() {
+  const queryClient = getQueryClient();
 
-const Tabs = () => {
-  const searchParams = useSearchParams();
+  await queryClient.prefetchQuery(["listTextPasswords"], listTextPasswords);
 
-  const activeTab = searchParams.get("type") ?? passwordDefinitions[0].name;
+  const dehydratedState = dehydrate(queryClient);
 
   return (
-    <div>
-      <div className="text-sm breadcrumbs p-4">
-        <ul>
-          <li>
-            <a href="/">Top</a>
-          </li>
-          <li className="text-accent font-bold">My Secrets</li>
-        </ul>
-      </div>
-
-      <div className="tabs">
-        {passwordDefinitions.map((passwordDefinition) => (
-          <Link
-            key={passwordDefinition.name}
-            href={`/dashboard?type=${passwordDefinition.name}`}
-            className={cx(
-              "tab tab-bordered",
-              activeTab === passwordDefinition.name && "tab-active",
-            )}
-          >
-            {passwordDefinition.label.toLocaleUpperCase()}S
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default function () {
-  return (
-    <div>
+    <Hydrate state={dehydratedState}>
       <Tabs />
-    </div>
+    </Hydrate>
   );
 }

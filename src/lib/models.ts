@@ -35,6 +35,7 @@ export type UserDO = z.infer<typeof UserDO>;
 export const User = UserFields.pick({
   id: true,
   email: true,
+  nonce: true,
   created_at: true,
   updated_at: true,
 });
@@ -79,6 +80,7 @@ export const BasePasswordDO = z.object({
 
 export const TextPasswordDO = BasePasswordDO.extend({
   type: z.literal("TEXT"),
+  name: z.string(),
   text: Sensitive,
 });
 
@@ -87,6 +89,7 @@ export type TextPasswordDO = z.infer<typeof TextPasswordDO>;
 export const CreateTextPassword = TextPasswordDO.pick({
   url: true,
   type: true,
+  name: true,
   text: true,
 });
 

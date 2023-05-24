@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { login } from "@/app/_actions";
 import { useAction } from "@/lib/action/client";
+import { hashPassword, setPersistHashedPassword } from "@/lib/Sensitive";
 
 export default function LoginForm() {
   const { formErrors, loading, clearErrors, execute } = useAction(login);
@@ -16,12 +17,15 @@ export default function LoginForm() {
         e.stopPropagation();
         e.preventDefault();
 
-        await execute({
+        const inputPassword = (
+          document.getElementById("inputPassword") as HTMLInputElement
+        ).value;
+
+        const user = (await execute({
           email: (document.getElementById("email") as HTMLInputElement).value,
-          inputPassword: (
-            document.getElementById("inputPassword") as HTMLInputElement
-          ).value,
-        });
+          inputPassword,
+        }))!;
+        setPersistHashedPassword(await hashPassword(inputPassword, user.nonce));
         location.href = "/dashboard";
       }}
       action="#"

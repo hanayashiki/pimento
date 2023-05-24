@@ -32,7 +32,7 @@ export default function DashboardLayout({
         {!me && <span>Not Logged In</span>}
       </nav>
 
-      <div className="flex">
+      <div className="flex flex-1">
         <div className="p-3 mr-2">
           <ul className="menu bg-base-100 rounded-box">
             <li>

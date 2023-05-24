@@ -23,10 +23,10 @@ function base64ToArrayBuffer(base64: string) {
   return bytes.buffer;
 }
 
-export const getKey = async (clearPassword: string, nonce: string) => {
+export const getKey = async (hashedPassword: string, nonce: string) => {
   const keyData = await crypto.subtle.digest(
     "SHA-256",
-    new TextEncoder().encode(clearPassword + nonce),
+    new TextEncoder().encode(hashedPassword + nonce),
   );
 
   const key = await crypto.subtle.importKey("raw", keyData, "AES-CBC", true, [
@@ -38,14 +38,14 @@ export const getKey = async (clearPassword: string, nonce: string) => {
 };
 
 export const toSensitive = async (
-  clearPassword: string,
+  hashedPassword: string,
   nonce: string,
   text: string,
 ): Promise<Sensitive> => {
   const iv = crypto.getRandomValues(new Uint8Array(16));
   const data = new TextEncoder().encode(text);
 
-  const key = await getKey(clearPassword, nonce);
+  const key = await getKey(hashedPassword, nonce);
 
   const encrypted = await crypto.subtle.encrypt(
     {
@@ -63,7 +63,7 @@ export const toSensitive = async (
 };
 
 export const fromSensitive = async (
-  clearPassword: string,
+  hashedPassword: string,
   nonce: string,
   sensitive: Sensitive,
 ): Promise<string> => {
@@ -71,7 +71,7 @@ export const fromSensitive = async (
 
   const iv = base64ToArrayBuffer(ivText);
 
-  const key = await getKey(clearPassword, nonce);
+  const key = await getKey(hashedPassword, nonce);
 
   const data = base64ToArrayBuffer(dataText);
 
@@ -87,3 +87,19 @@ export const fromSensitive = async (
 
   return new TextDecoder().decode(decrypted);
 };
+
+export const hashPassword = async (clearPassword: string, nonce: string) => {
+  const keyData = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(clearPassword + nonce),
+  );
+
+  return arrayBufferToBase64(keyData);
+};
+
+export const setPersistHashedPassword = (v: string) => {
+  localStorage.setItem("HASHED_PASSWORD", v);
+};
+
+export const getPersistHasedPassword = () =>
+  localStorage.getItem("HASHED_PASSWORD");

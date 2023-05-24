@@ -1,11 +1,9 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
-import { pipe } from "remeda";
 
+import { getUser } from "./_actions";
 import { MeProvider } from "@/lib/client/MeProvider";
-import { Service } from "@/lib/server/Service";
-import { UserService } from "@/lib/server/UserService";
+import Providers from "@/lib/client/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,17 +17,17 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const me = await pipe(cookies().get("token"), (token) =>
-    token?.value ? Service.get(UserService).getMeByToken(token.value) : null,
-  );
+  const me = await getUser();
 
   return (
-    <MeProvider value={{ me }}>
-      <html lang="en" data-theme="dark">
-        <body className={inter.className}>
-          <main className="min-h-screen h-screen">{children}</main>
-        </body>
-      </html>
-    </MeProvider>
+    <Providers>
+      <MeProvider value={{ me }}>
+        <html lang="en" data-theme="dark">
+          <body className={inter.className}>
+            <main className="min-h-screen h-screen">{children}</main>
+          </body>
+        </html>
+      </MeProvider>
+    </Providers>
   );
 }

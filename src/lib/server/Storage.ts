@@ -1,5 +1,5 @@
 import { VercelKV, createClient } from "@vercel/kv";
-import { pipe } from "remeda";
+import { pipe, reduce } from "remeda";
 import { z } from "zod";
 
 import { env } from "@/lib/env";
@@ -23,6 +23,8 @@ export interface Model<
 export type AnyModel = Model<any, ForeignKeyMap>;
 
 export type AnyData = Record<string, any>;
+
+export type ModelDO<M extends AnyModel> = z.infer<M["do"]>;
 
 export const defineModel = <
   S extends ZodAnyObject = ZodAnyObject,
@@ -74,13 +76,13 @@ export class StorageHelpers {
     oneModel: AnyModel,
     manyModel: AnyModel,
     fkName: string,
-    manyModelPkValue: any,
+    fkValue: any,
   ) {
     if (!(fkName in manyModel.do.shape)) {
       throw new Error(`${fkName} not found on model ${manyModel.name}`);
     }
 
-    return `${oneModel.name}__fk:${manyModel.name}:${fkName}:${manyModelPkValue}`;
+    return `${oneModel.name}__fk:${manyModel.name}:${fkName}:${fkValue}`;
   }
 }
 
@@ -147,7 +149,7 @@ export class Storage {
   async readObjectByPk<S extends ZodAnyObject>(
     model: Model<S>,
     pkValue: any,
-  ): Promise<z.infer<Model<S>["do"]> | null> {
+  ): Promise<ModelDO<Model<S>> | null> {
     const rawObject = await this.kv.hgetall(
       StorageHelpers.getPkKeyName(model, pkValue),
     );
@@ -159,7 +161,7 @@ export class Storage {
     model: Model<S>,
     index: string,
     indexValue: any,
-  ): Promise<z.infer<Model<S>["do"]> | null> {
+  ): Promise<ModelDO<Model<S>> | null> {
     const pkValue = await this.kv.get(
       StorageHelpers.getUniqueIndexKeyName(model, index, indexValue),
     );
@@ -167,6 +169,27 @@ export class Storage {
     if (pkValue === null) return null;
 
     return this.readObjectByPk(model, pkValue);
+  }
+
+  async listObjectsByFk<S extends ZodAnyObject>(
+    oneModel: AnyModel,
+    manyModel: Model<S>,
+    fkName: string,
+    fkValue: any,
+  ): Promise<ModelDO<Model<S>>[]> {
+    const pks = await this.kv.smembers(
+      StorageHelpers.getFkKeyName(oneModel, manyModel, fkName, fkValue),
+    );
+
+    if (pks.length === 0) return [];
+
+    const objects = await reduce(
+      pks,
+      (p, pk) => p.hgetall(StorageHelpers.getPkKeyName(manyModel, pk)),
+      this.kv.pipeline(),
+    ).exec();
+
+    return manyModel.do.array().parse(objects);
   }
 
   async checkPk(model: AnyModel, data: AnyData) {

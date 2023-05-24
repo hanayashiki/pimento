@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { createAccount } from "@/app/_actions";
 import { useAction } from "@/lib/action/client";
+import { hashPassword, setPersistHashedPassword } from "@/lib/Sensitive";
 
 export default function CreateAccountForm() {
   const { formErrors, loading, clearErrors, execute } =
@@ -17,12 +18,18 @@ export default function CreateAccountForm() {
         e.stopPropagation();
         e.preventDefault();
 
-        await execute({
+        const inputPassword = (
+          document.getElementById("inputPassword") as HTMLInputElement
+        ).value;
+
+        const user = (await execute({
           email: (document.getElementById("email") as HTMLInputElement).value,
           inputPassword: (
             document.getElementById("inputPassword") as HTMLInputElement
           ).value,
-        });
+        }))!;
+
+        setPersistHashedPassword(await hashPassword(inputPassword, user.nonce));
 
         location.href = "/dashboard";
       }}
