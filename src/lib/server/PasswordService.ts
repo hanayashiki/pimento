@@ -3,6 +3,7 @@ import { sortBy } from "remeda";
 import { Service } from "./Service";
 import {
   CreateTextPassword,
+  PasswordSearch,
   TextPasswordDO,
   TextPasswordModel,
   UserDO,
@@ -22,13 +23,15 @@ export class PasswordService extends Service {
     await this.storage.createObject(TextPasswordModel, doData);
   }
 
-  async listTextPasswords(user: UserDO) {
+  async listTextPasswords(user: UserDO, search: PasswordSearch) {
     const list = await this.storage.listObjectsByFk(
       UserModel,
       TextPasswordModel,
       "user_id",
       user.id,
     );
-    return sortBy(list, (x) => x.id);
+    return sortBy(list, (x) => x.id).filter(
+      (x) => x.name.includes(search.search) || x.url.includes(search.search),
+    );
   }
 }

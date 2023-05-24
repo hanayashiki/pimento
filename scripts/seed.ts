@@ -50,7 +50,7 @@ import { UserService } from "@/lib/server/UserService";
     "1115514" === (await fromSensitive(userHashedPassword, user.nonce, text2)),
   );
 
-  console.info(await passwordService.listTextPasswords(user));
+  console.info(await passwordService.listTextPasswords(user, { search: "" }));
 
-  console.info(await passwordService.listTextPasswords(user2));
+  console.info(await passwordService.listTextPasswords(user2, { search: "" }));
 })();

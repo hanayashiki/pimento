@@ -1,18 +1,29 @@
 "use client";
 
+import { useState } from "react";
+
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { listTextPasswords } from "../_actions";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
+import { PasswordSearch } from "@/lib/models";
 
 const TextPasswords = () => {
-  const { data } = useQuery({
-    queryKey: ["listTextPasswords"],
-    queryFn: listTextPasswords,
+  const params = useSearchParams();
+
+  const [search, setSearch] = useState("");
+
+  const passwordSearch: PasswordSearch = {
+    search,
+  };
+
+  const { data, isPreviousData } = useQuery({
+    queryKey: ["listTextPasswords", passwordSearch],
+    queryFn: () => listTextPasswords(passwordSearch),
+    keepPreviousData: true,
   });
 
-  const params = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -20,7 +31,20 @@ const TextPasswords = () => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="table w-full">
+      <div className="form-control mb-8">
+        <input
+          type="text"
+          placeholder="Search here"
+          className="input input-bordered w-full max-w-xs"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
+      <table
+        className="table w-full"
+        style={{ opacity: isPreviousData ? 0.8 : undefined }}
+      >
         {/* head */}
         <thead>
           <tr>
@@ -32,33 +56,38 @@ const TextPasswords = () => {
           </tr>
         </thead>
         <tbody>
-          {data?.map((password, i) => (
-            <tr key={password.id}>
-              <td>{i + 1}</td>
-              <td>{password.url}</td>
-              <td>{password.name}</td>
-              <td className="min-w-[100px]">
-                <SensitiveDisplay
-                  visible={visibleId.includes(String(password.id))}
-                  onChangeVisible={() => {
-                    const currentParams = new URLSearchParams();
-                    const nextVisible = visibleId.includes(String(password.id))
-                      ? visibleId.filter((i) => i !== String(password.id))
-                      : [...visibleId, String(password.id)];
-                    currentParams.delete("visible");
-                    for (const v of nextVisible) {
-                      currentParams.append("visible", v);
-                    }
-                    router.push(`${pathname}/?${currentParams.toString()}`, {
-                      forceOptimisticNavigation: true,
-                    });
-                  }}
-                  sensitive={password.text}
-                />
-              </td>
-              <td>{password.created_at}</td>
-            </tr>
-          ))}
+          {data?._tag === "Right" &&
+            data.right.map((password, i) => (
+              <tr key={password.id}>
+                <td>{i + 1}</td>
+                <td>{password.url}</td>
+                <td>{password.name}</td>
+                <td className="min-w-[100px]">
+                  <SensitiveDisplay
+                    visible={visibleId.includes(String(password.id))}
+                    onChangeVisible={() => {
+                      const currentParams = new URLSearchParams(
+                        params.toString(),
+                      );
+                      const nextVisible = visibleId.includes(
+                        String(password.id),
+                      )
+                        ? visibleId.filter((i) => i !== String(password.id))
+                        : [...visibleId, String(password.id)];
+                      currentParams.delete("visible");
+                      for (const v of nextVisible) {
+                        currentParams.append("visible", v);
+                      }
+                      router.push(`${pathname}/?${currentParams.toString()}`, {
+                        forceOptimisticNavigation: true,
+                      });
+                    }}
+                    sensitive={password.text}
+                  />
+                </td>
+                <td>{password.created_at}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>

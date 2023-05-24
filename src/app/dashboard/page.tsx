@@ -8,7 +8,9 @@ import Hydrate from "@/lib/client/Hydrate";
 export default async function Page() {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(["listTextPasswords"], listTextPasswords);
+  await queryClient.prefetchQuery(["listTextPasswords", { search: "" }], () =>
+    listTextPasswords({ search: "" }),
+  );
 
   const dehydratedState = dehydrate(queryClient);
 

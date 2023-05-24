@@ -74,13 +74,13 @@ export const BasePasswordDO = z.object({
   id: z.number(),
   user_id: z.number(), // FK
   url: z.string(),
+  name: z.string(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 });
 
 export const TextPasswordDO = BasePasswordDO.extend({
   type: z.literal("TEXT"),
-  name: z.string(),
   text: Sensitive,
 });
 
@@ -113,6 +113,15 @@ export const AccountPassword = BasePasswordDO.extend({
 
 export type AccountPassword = z.infer<typeof AccountPassword>;
 
+export const CreateAccountPassword = AccountPassword.pick({
+  url: true,
+  type: true,
+  username: true,
+  password: true,
+});
+
+export type CreateAccountPassword = z.infer<typeof CreateAccountPassword>;
+
 export const AccountPasswordModel = defineModel({
   name: "AccountPassword",
   do: AccountPassword,
@@ -138,3 +147,9 @@ export const passwordDefinitions = [
     label: "account",
   },
 ] as const satisfies readonly PasswordDefinition[];
+
+export const PasswordSearch = z.object({
+  search: z.string(),
+});
+
+export type PasswordSearch = z.infer<typeof PasswordSearch>;

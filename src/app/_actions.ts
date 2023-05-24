@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import { createAction } from "@/lib/action/server";
 import { AppError } from "@/lib/errors";
-import { CreateUser, LoginUser } from "@/lib/models";
+import { CreateUser, LoginUser, PasswordSearch } from "@/lib/models";
 import { PasswordService } from "@/lib/server/PasswordService";
 import { Service } from "@/lib/server/Service";
 import { UserService } from "@/lib/server/UserService";
@@ -81,10 +81,13 @@ export const redirectToDashboardOrLogin = async () => {
   }
 };
 
-export const listTextPasswords = async () => {
-  const user = await requireUser();
+export const listTextPasswords = createAction(
+  { input: PasswordSearch },
+  async (input) => {
+    const user = await requireUser();
 
-  const passwordService = Service.get(PasswordService);
+    const passwordService = Service.get(PasswordService);
 
-  return await passwordService.listTextPasswords(user);
-};
+    return await passwordService.listTextPasswords(user, input);
+  },
+);
