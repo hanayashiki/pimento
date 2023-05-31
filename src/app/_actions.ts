@@ -17,6 +17,8 @@ import {
   UpdateTextPassword,
   LoginUser,
   PasswordSearch,
+  CreateAccountPassword,
+  UpdateAccountPassword,
 } from "@/lib/models";
 import { PasswordService } from "@/lib/server/PasswordService";
 import { Service } from "@/lib/server/Service";
@@ -89,7 +91,8 @@ export const redirectToDashboardOrLogin = async () => {
   }
 };
 
-export const listTextPasswords = createAction(
+// TextPasswords
+export const listTextPassword = createAction(
   { input: PasswordSearch },
   async (input) => {
     const user = await requireUser();
@@ -127,5 +130,47 @@ export const deleteTextPassword = createAction(
     const passwordService = Service.get(PasswordService);
 
     return await passwordService.deleteTextPassword(user, id);
+  },
+);
+
+// AccountPassword
+export const listAccountPassword = createAction(
+  { input: PasswordSearch },
+  async (input) => {
+    const user = await requireUser();
+
+    const passwordService = Service.get(PasswordService);
+
+    return await passwordService.listAccountPasswords(user, input);
+  },
+);
+
+export const createAccountPassword = createAction(
+  { input: CreateAccountPassword },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return passwordService.createAccountPassword(user, input);
+  },
+);
+
+export const updateAccountPassword = createAction(
+  { input: UpdateAccountPassword },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return passwordService.updateAccountPassword(user, input);
+  },
+);
+
+export const deleteAccountPassword = createAction(
+  { input: z.number() },
+  async (id) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return await passwordService.deleteAccountPassword(user, id);
   },
 );

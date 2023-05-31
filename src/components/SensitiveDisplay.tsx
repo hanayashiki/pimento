@@ -1,8 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
-import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { cx } from "classix";
+import copy from "copy-to-clipboard";
+import { VscEye, VscEyeClosed, VscCopy } from "react-icons/vsc";
 
 import { useSensitiveQuery } from "@/lib/client/useSensitive";
 import { Sensitive } from "@/lib/Sensitive";
@@ -18,13 +20,35 @@ export const SensitiveDisplay = ({
 }) => {
   const decryptQuery = useSensitiveQuery(sensitive);
 
+  const [copied, setCopied] = useState(false);
+
+  const copyButton = (
+    <button
+      onClick={() => {
+        decryptQuery.data && copy(decryptQuery.data) && setCopied(true);
+
+        setTimeout(() => {
+          setCopied(false);
+        }, 100);
+      }}
+      className={cx("mr-3", "transition-colors", copied && "text-secondary")}
+    >
+      <VscCopy />
+    </button>
+  );
+
   return (
     <>
       {visible && (
         <>
-          <button onClick={() => onChangeVisible(false)} className="mr-3">
+          <button
+            onClick={() => onChangeVisible(false)}
+            className="mr-3 hover:text-accent"
+          >
             <VscEyeClosed />
           </button>
+
+          {copyButton}
 
           {decryptQuery.data ?? (
             <span
@@ -34,17 +58,28 @@ export const SensitiveDisplay = ({
                 position: "relative",
                 top: 1,
               }}
-              className="bg-white bg-opacity-40 rounded-sm animate-pulse inline-block"
+              className={cx(
+                "bg-white bg-opacity-40 rounded-sm animate-pulse inline-block",
+                "transition-colors",
+                copied && "text-secondary",
+              )}
             />
           )}
         </>
       )}
       {!visible && (
         <>
-          <button onClick={() => onChangeVisible(true)} className="mr-3">
+          <button
+            onClick={() => onChangeVisible(true)}
+            className="mr-3 hover:text-accent"
+          >
             <VscEye />
           </button>
-          <span>****</span>
+
+          {copyButton}
+          <span className={cx(copied && "text-secondary", "transition-colors")}>
+            ****
+          </span>
         </>
       )}
     </>

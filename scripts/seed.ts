@@ -53,4 +53,12 @@ import { UserService } from "@/lib/server/UserService";
   console.info(await passwordService.listTextPasswords(user, { search: "" }));
 
   console.info(await passwordService.listTextPasswords(user2, { search: "" }));
+
+  await passwordService.createAccountPassword(user, {
+    type: "ACCOUNT",
+    name: "senpai",
+    username: await toSensitive(userHashedPassword, user.nonce, "user1996"),
+    password: await toSensitive(userHashedPassword, user.nonce, "114514"),
+    url: "https://vercel.com/dashboard",
+  });
 })();

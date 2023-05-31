@@ -115,26 +115,38 @@ export const TextPasswordModel = defineModel({
   },
 });
 
-export const AccountPassword = BasePasswordDO.extend({
-  type: z.literal("TEXT"),
+export const AccountPasswordDO = BasePasswordDO.extend({
+  type: z.literal("ACCOUNT"),
   username: Sensitive,
   password: Sensitive,
 });
 
-export type AccountPassword = z.infer<typeof AccountPassword>;
+export type AccountPasswordDO = z.infer<typeof AccountPasswordDO>;
 
-export const CreateAccountPassword = AccountPassword.pick({
+export const CreateAccountPassword = AccountPasswordDO.pick({
   url: true,
   type: true,
+  name: true,
   username: true,
   password: true,
 });
 
 export type CreateAccountPassword = z.infer<typeof CreateAccountPassword>;
 
+export const UpdateAccountPassword = AccountPasswordDO.pick({
+  id: true,
+  url: true,
+  type: true,
+  name: true,
+  username: true,
+  password: true,
+});
+
+export type UpdateAccountPassword = z.infer<typeof UpdateAccountPassword>;
+
 export const AccountPasswordModel = defineModel({
   name: "AccountPassword",
-  do: AccountPassword,
+  do: AccountPasswordDO,
   pk: "id",
   uniqueIndices: [],
   fks: {

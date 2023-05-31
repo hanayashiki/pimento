@@ -101,5 +101,5 @@ export const setPersistHashedPassword = (v: string) => {
   localStorage.setItem("HASHED_PASSWORD", v);
 };
 
-export const getPersistHasedPassword = () =>
+export const getPersistHashedPassword = () =>
   localStorage.getItem("HASHED_PASSWORD");

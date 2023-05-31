@@ -4,17 +4,18 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { VscAdd, VscEdit } from "react-icons/vsc";
+import { VscEdit } from "react-icons/vsc";
 
-import { TextPasswordDialog } from "./TextPasswordDialog";
-import { listTextPasswords } from "../_actions";
+import { AccountPasswordDialog } from "./AccountPasswordDialog";
+import { listAccountPassword } from "../_actions";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
-import { PasswordSearch, TextPasswordDO } from "@/lib/models";
+import { TableToolbar } from "@/components/TableToolbar";
+import { AccountPasswordDO, PasswordSearch } from "@/lib/models";
 
-const TextPasswords = () => {
+const AccountPasswordTable = () => {
   const [search, setSearch] = useState("");
 
-  const [editTarget, setEditTarget] = useState<TextPasswordDO>();
+  const [editTarget, setEditTarget] = useState<AccountPasswordDO>();
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
@@ -23,8 +24,8 @@ const TextPasswords = () => {
   };
 
   const { data, isPreviousData } = useQuery({
-    queryKey: ["listTextPasswords", passwordSearch],
-    queryFn: () => listTextPasswords(passwordSearch),
+    queryKey: ["listAccountPassword", passwordSearch],
+    queryFn: () => listAccountPassword(passwordSearch),
     keepPreviousData: true,
   });
 
@@ -32,19 +33,11 @@ const TextPasswords = () => {
 
   return (
     <div>
-      <div className="mb-8 flex gap-x-4">
-        <input
-          type="text"
-          placeholder="Search here"
-          className="input input-bordered w-full max-w-xs"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <button className="hover:text-primary" onClick={() => setAddOpen(true)}>
-          <VscAdd />
-        </button>
-      </div>
+      <TableToolbar
+        search={search}
+        setSearch={setSearch}
+        onClickAdd={() => setAddOpen(true)}
+      />
 
       <div className="overflow-x-auto">
         <table
@@ -57,7 +50,8 @@ const TextPasswords = () => {
               <th></th>
               <th>URL</th>
               <th>NAME</th>
-              <th>TEXT</th>
+              <th>USERNAME</th>
+              <th>PASSWORD</th>
               <th>CREATED</th>
             </tr>
           </thead>
@@ -90,7 +84,20 @@ const TextPasswords = () => {
                             : [...visibleIds, password.id],
                         );
                       }}
-                      sensitive={password.text}
+                      sensitive={password.username}
+                    />
+                  </td>
+                  <td className="min-w-[100px]">
+                    <SensitiveDisplay
+                      visible={visibleIds.includes(password.id)}
+                      onChangeVisible={() => {
+                        setVisibleIds(
+                          visibleIds.includes(password.id)
+                            ? visibleIds.filter((i) => i !== password.id)
+                            : [...visibleIds, password.id],
+                        );
+                      }}
+                      sensitive={password.password}
                     />
                   </td>
                   <td>
@@ -102,9 +109,9 @@ const TextPasswords = () => {
         </table>
       </div>
 
-      <TextPasswordDialog open={addOpen} onClose={() => setAddOpen(false)} />
-      <TextPasswordDialog
-        textPassword={editTarget}
+      <AccountPasswordDialog open={addOpen} onClose={() => setAddOpen(false)} />
+      <AccountPasswordDialog
+        password={editTarget}
         open={editOpen}
         onClose={() => {
           setEditOpen(false);
@@ -114,4 +121,4 @@ const TextPasswords = () => {
   );
 };
 
-export default TextPasswords;
+export default AccountPasswordTable;

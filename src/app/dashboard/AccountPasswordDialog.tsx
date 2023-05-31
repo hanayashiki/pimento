@@ -6,25 +6,25 @@ import { useQueryClient } from "@tanstack/react-query";
 import { cx } from "classix";
 
 import {
-  createTextPassword,
-  deleteTextPassword,
-  updateTextPassword,
+  createAccountPassword,
+  deleteAccountPassword,
+  updateAccountPassword,
 } from "../_actions";
 import { Dialog } from "@/components/Dialog";
 import { useAction } from "@/lib/action/client";
 import { useMe } from "@/lib/client/MeProvider";
 import { useSensitiveQuery } from "@/lib/client/useSensitive";
-import { TextPasswordDO } from "@/lib/models";
+import { AccountPasswordDO } from "@/lib/models";
 import { getPersistHashedPassword, toSensitive } from "@/lib/Sensitive";
 
-export const TextPasswordDialog: React.FC<{
-  password?: TextPasswordDO;
+export const AccountPasswordDialog: React.FC<{
+  password?: AccountPasswordDO;
   open: boolean;
   onClose: () => void;
 }> = ({ password, open, onClose }) => {
-  const createAction = useAction(createTextPassword);
-  const updateAction = useAction(updateTextPassword);
-  const deleteAction = useAction(deleteTextPassword);
+  const createAction = useAction(createAccountPassword);
+  const updateAction = useAction(updateAccountPassword);
+  const deleteAction = useAction(deleteAccountPassword);
 
   const clearErrors = () => {
     createAction.clearErrors();
@@ -32,20 +32,25 @@ export const TextPasswordDialog: React.FC<{
   };
 
   const refresh = () => {
-    queryClient.invalidateQueries(["listTextPassword"]);
+    queryClient.invalidateQueries(["listAccountPassword"]);
   };
 
   const { me } = useMe();
 
   const queryClient = useQueryClient();
 
-  const textDecrypted = useSensitiveQuery(password?.text!, {
+  const usernameDecrypted = useSensitiveQuery(password?.username!, {
+    enabled: !!password,
+  });
+
+  const passwordDecrypted = useSensitiveQuery(password?.password!, {
     enabled: !!password,
   });
 
   const urlRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const textRef = useRef<HTMLInputElement>(null);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   return (
     <Dialog
@@ -64,23 +69,33 @@ export const TextPasswordDialog: React.FC<{
               id: password.id,
               url: urlRef.current!.value,
               name: nameRef.current!.value,
-              text: await toSensitive(
+              username: await toSensitive(
                 getPersistHashedPassword()!,
                 me.nonce,
-                textRef.current!.value,
+                usernameRef.current!.value,
               ),
-              type: "TEXT",
+              password: await toSensitive(
+                getPersistHashedPassword()!,
+                me.nonce,
+                passwordRef.current!.value,
+              ),
+              type: "ACCOUNT",
             });
           } else {
             await createAction.execute({
               url: urlRef.current!.value,
               name: nameRef.current!.value,
-              text: await toSensitive(
+              username: await toSensitive(
                 getPersistHashedPassword()!,
                 me.nonce,
-                textRef.current!.value,
+                usernameRef.current!.value,
               ),
-              type: "TEXT",
+              password: await toSensitive(
+                getPersistHashedPassword()!,
+                me.nonce,
+                passwordRef.current!.value,
+              ),
+              type: "ACCOUNT",
             });
           }
 
@@ -108,14 +123,37 @@ export const TextPasswordDialog: React.FC<{
           onChange={clearErrors}
         />
 
-        {password != null && textDecrypted.data != null && (
+        {password != null && usernameDecrypted.data != null && (
           <input
             className={cx("input input-bordered")}
-            placeholder="Text"
+            placeholder="Username"
             type="text"
             name="text"
-            ref={textRef}
-            defaultValue={textDecrypted.data}
+            ref={usernameRef}
+            defaultValue={usernameDecrypted.data}
+            onChange={clearErrors}
+          />
+        )}
+
+        {password != null && passwordDecrypted.data != null && (
+          <input
+            className={cx("input input-bordered")}
+            placeholder="Password"
+            type="text"
+            name="text"
+            ref={passwordRef}
+            defaultValue={passwordDecrypted.data}
+            onChange={clearErrors}
+          />
+        )}
+
+        {password == null && (
+          <input
+            className={cx("input input-bordered")}
+            placeholder="Username"
+            type="text"
+            name="text"
+            ref={usernameRef}
             onChange={clearErrors}
           />
         )}
@@ -126,7 +164,7 @@ export const TextPasswordDialog: React.FC<{
             placeholder="Text"
             type="text"
             name="text"
-            ref={textRef}
+            ref={passwordRef}
             onChange={clearErrors}
           />
         )}

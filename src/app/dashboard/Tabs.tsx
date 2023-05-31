@@ -4,7 +4,8 @@ import { cx } from "classix";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-import TextPasswords from "./TextPasswords";
+import AccountPasswordTable from "./AccountPasswordTable";
+import TextPasswordTable from "./TextPasswordTable";
 import { passwordDefinitions } from "@/lib/models";
 
 const Tabs = () => {
@@ -39,7 +40,9 @@ const Tabs = () => {
       </div>
 
       <div className="px-4 py-6 flex-1">
-        {activeTab === "TextPassword" && <TextPasswords />}
+        {activeTab === "TextPassword" && <TextPasswordTable />}
+
+        {activeTab === "AccountPassword" && <AccountPasswordTable />}
       </div>
     </div>
   );

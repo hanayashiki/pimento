@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import {
   Sensitive,
   fromSensitive,
-  getPersistHasedPassword,
+  getPersistHashedPassword,
 } from "../Sensitive";
 import { useMe } from "@/lib/client/MeProvider";
 
@@ -21,7 +21,7 @@ export const useSensitiveQuery = (
   return useQuery(
     ["sensitive", sensitive],
     async () => {
-      const hashedPassword = getPersistHasedPassword();
+      const hashedPassword = getPersistHashedPassword();
 
       if (!hashedPassword) {
         router.push("/login");
