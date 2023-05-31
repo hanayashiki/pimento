@@ -14,6 +14,7 @@ import { AppError } from "@/lib/errors";
 import {
   CreateTextPassword,
   CreateUser,
+  UpdateTextPassword,
   LoginUser,
   PasswordSearch,
 } from "@/lib/models";
@@ -77,6 +78,8 @@ export const redirectToDashboardOrLogin = async () => {
 
     if (user) {
       redirect("/dashboard");
+    } else {
+      redirect("/login");
     }
   } catch (e) {
     if (typeof e === "object" && e instanceof errors.JOSEError) {
@@ -104,5 +107,25 @@ export const createTextPassword = createAction(
     const passwordService = Service.get(PasswordService);
 
     return passwordService.createTextPassword(user, input);
+  },
+);
+
+export const updateTextPassword = createAction(
+  { input: UpdateTextPassword },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return passwordService.updateTextPassword(user, input);
+  },
+);
+
+export const deleteTextPassword = createAction(
+  { input: z.number() },
+  async (id) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return await passwordService.deleteTextPassword(user, id);
   },
 );

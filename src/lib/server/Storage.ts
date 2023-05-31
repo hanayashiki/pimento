@@ -25,6 +25,7 @@ export type AnyModel = Model<any, ForeignKeyMap>;
 export type AnyData = Record<string, any>;
 
 export type ModelDO<M extends AnyModel> = z.infer<M["do"]>;
+export type ModelPkValue<M extends AnyModel> = ModelDO<M>[M["pk"]];
 
 export const defineModel = <
   S extends ZodAnyObject = ZodAnyObject,
@@ -36,6 +37,11 @@ export const defineModel = <
 export class ErrorPk extends Error {
   constructor(public model: AnyModel, public pkValue: any) {
     super(`${StorageHelpers.getPkKeyName(model, pkValue)} already exists`);
+  }
+}
+export class ErrorPkNotExist extends Error {
+  constructor(public model: AnyModel, public pkValue: any) {
+    super(`${StorageHelpers.getPkKeyName(model, pkValue)} does not exists`);
   }
 }
 
@@ -102,7 +108,7 @@ export class Storage {
 
   async createObject<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
     model: Model<S, FK>,
-    data: z.infer<Model<S>["do"]>,
+    data: ModelDO<Model<S>>,
   ) {
     const pkValue = data[model.pk];
 
@@ -146,8 +152,74 @@ export class Storage {
     return await this.readObjectByPk(model, pkValue);
   }
 
-  async readObjectByPk<S extends ZodAnyObject>(
-    model: Model<S>,
+  async updateObject<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
+    model: Model<S, FK>,
+    pkValue: ModelDO<Model<S, FK>>[Model<S, FK>["pk"]],
+    data: Partial<ModelDO<Model<S, FK>>>,
+  ) {
+    const object = await this.readObjectByPk(model, pkValue);
+
+    if (!object) {
+      throw new ErrorPkNotExist(model, pkValue);
+    }
+
+    // TODO: update keys
+
+    await pipe(
+      this.kv.pipeline(),
+      (p) => p.hset(StorageHelpers.getPkKeyName(model, pkValue), data),
+      (p) => p.exec(),
+    );
+
+    return await this.readObjectByPk(model, pkValue);
+  }
+
+  async deleteObjectByPk<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
+    model: Model<S, FK>,
+    pkValue: ModelDO<Model<S, FK>>[Model<S, FK>["pk"]],
+  ) {
+    const data = await this.readObjectByPk(model, pkValue);
+    if (!data) {
+      throw new ErrorPkNotExist(model, pkValue);
+    }
+
+    await pipe(
+      this.kv.pipeline(),
+      (p) =>
+        model.uniqueIndices.reduce(
+          (p, uniqueIndex) =>
+            p.del(
+              StorageHelpers.getUniqueIndexKeyName(
+                model,
+                uniqueIndex,
+                data[uniqueIndex],
+              ),
+            ),
+          p,
+        ),
+      (p) =>
+        Object.entries(model.fks).reduce(
+          (p, [fkName, oneModel]) =>
+            p.srem(
+              StorageHelpers.getFkKeyName(
+                oneModel,
+                model,
+                fkName,
+                data[fkName],
+              ),
+              pkValue,
+            ),
+          p,
+        ),
+      (p) => p.hset(StorageHelpers.getPkKeyName(model, pkValue), data),
+      (p) => p.exec(),
+    );
+
+    return data;
+  }
+
+  async readObjectByPk<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
+    model: Model<S, FK>,
     pkValue: any,
   ): Promise<ModelDO<Model<S>> | null> {
     const rawObject = await this.kv.hgetall(

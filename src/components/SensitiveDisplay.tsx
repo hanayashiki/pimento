@@ -2,13 +2,10 @@
 
 import React from "react";
 
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
-import { useMe } from "@/lib/client/MeProvider";
-import { getPersistHasedPassword, Sensitive } from "@/lib/Sensitive";
-import { fromSensitive } from "@/lib/Sensitive";
+import { useSensitiveQuery } from "@/lib/client/useSensitive";
+import { Sensitive } from "@/lib/Sensitive";
 
 export const SensitiveDisplay = ({
   sensitive,
@@ -19,26 +16,7 @@ export const SensitiveDisplay = ({
   visible: boolean;
   onChangeVisible: (v: boolean) => void;
 }) => {
-  const { me } = useMe();
-
-  const router = useRouter();
-
-  const decryptQuery = useQuery(
-    ["sensitive", sensitive],
-    async () => {
-      const hashedPassword = getPersistHasedPassword();
-
-      if (!hashedPassword) {
-        router.push("/login");
-        return "";
-      }
-      const v = await fromSensitive(hashedPassword, me.nonce, sensitive);
-      return v;
-    },
-    {
-      staleTime: Infinity,
-    },
-  );
+  const decryptQuery = useSensitiveQuery(sensitive);
 
   return (
     <>

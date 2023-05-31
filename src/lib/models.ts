@@ -95,6 +95,16 @@ export const CreateTextPassword = TextPasswordDO.pick({
 
 export type CreateTextPassword = z.infer<typeof CreateTextPassword>;
 
+export const UpdateTextPassword = TextPasswordDO.pick({
+  id: true,
+  url: true,
+  type: true,
+  name: true,
+  text: true,
+});
+
+export type UpdateTextPassword = z.infer<typeof UpdateTextPassword>;
+
 export const TextPasswordModel = defineModel({
   name: "TextPassword",
   do: TextPasswordDO,

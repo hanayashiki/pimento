@@ -6,6 +6,7 @@ import {
   PasswordSearch,
   TextPasswordDO,
   TextPasswordModel,
+  UpdateTextPassword,
   UserDO,
   UserModel,
 } from "../models";
@@ -21,6 +22,19 @@ export class PasswordService extends Service {
     };
 
     await this.storage.createObject(TextPasswordModel, doData);
+  }
+
+  async updateTextPassword(user: UserDO, data: UpdateTextPassword) {
+    // TODO: judge relation exists
+    return await this.storage.updateObject(TextPasswordModel, data.id, {
+      ...data,
+      updated_at: new Date().toISOString(),
+    });
+  }
+
+  async deleteTextPassword(user: UserDO, pk: number) {
+    // TODO: judge relation exists
+    return await this.storage.deleteObjectByPk(TextPasswordModel, pk);
   }
 
   async listTextPasswords(user: UserDO, search: PasswordSearch) {
