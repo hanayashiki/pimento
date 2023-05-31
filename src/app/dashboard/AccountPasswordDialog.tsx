@@ -161,7 +161,7 @@ export const AccountPasswordDialog: React.FC<{
         {password == null && (
           <input
             className={cx("input input-bordered")}
-            placeholder="Text"
+            placeholder="Password"
             type="text"
             name="text"
             ref={passwordRef}

@@ -13,10 +13,10 @@ export const defineModel = <
 
 export const UserFields = z.object({
   id: z.number(),
-  email: z.string().email(),
-  inputPassword: z.string().min(6, "Password at least contain 6 chars"),
-  hashedPassword: z.string(),
-  nonce: z.string(),
+  email: z.coerce.string().email(),
+  inputPassword: z.coerce.string().min(6, "Password at least contain 6 chars"),
+  hashedPassword: z.coerce.string(),
+  nonce: z.coerce.string(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 });
@@ -73,8 +73,8 @@ export const UserModel = defineModel({
 export const BasePasswordDO = z.object({
   id: z.number(),
   user_id: z.number(), // FK
-  url: z.string(),
-  name: z.string(),
+  url: z.coerce.string(),
+  name: z.coerce.string(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 });
