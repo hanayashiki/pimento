@@ -119,9 +119,7 @@ const AccountPasswordTable = () => {
         password={editTarget}
         key={useDialogKey(editOpen)}
         open={editOpen}
-        onClose={() => {
-          setEditOpen(false);
-        }}
+        onClose={() => setEditOpen(false)}
       />
     </div>
   );
