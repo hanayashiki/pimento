@@ -10,6 +10,7 @@ import { TextPasswordDialog } from "./TextPasswordDialog";
 import { listTextPassword } from "../_actions";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
 import { TableToolbar } from "@/components/TableToolbar";
+import { useDialogKey } from "@/lib/client/useDialogKey";
 import { PasswordSearch, TextPasswordDO } from "@/lib/models";
 
 const TextPasswordTable = () => {
@@ -95,8 +96,13 @@ const TextPasswordTable = () => {
         </table>
       </div>
 
-      <TextPasswordDialog open={addOpen} onClose={() => setAddOpen(false)} />
       <TextPasswordDialog
+        key={useDialogKey(addOpen)}
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+      />
+      <TextPasswordDialog
+        key={useDialogKey(editOpen)}
         password={editTarget}
         open={editOpen}
         onClose={() => {

@@ -10,6 +10,7 @@ import { AccountPasswordDialog } from "./AccountPasswordDialog";
 import { listAccountPassword } from "../_actions";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
 import { TableToolbar } from "@/components/TableToolbar";
+import { useDialogKey } from "@/lib/client/useDialogKey";
 import { AccountPasswordDO, PasswordSearch } from "@/lib/models";
 
 const AccountPasswordTable = () => {
@@ -109,9 +110,14 @@ const AccountPasswordTable = () => {
         </table>
       </div>
 
-      <AccountPasswordDialog open={addOpen} onClose={() => setAddOpen(false)} />
+      <AccountPasswordDialog
+        key={useDialogKey(addOpen)}
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+      />
       <AccountPasswordDialog
         password={editTarget}
+        key={useDialogKey(editOpen)}
         open={editOpen}
         onClose={() => {
           setEditOpen(false);

@@ -56,7 +56,7 @@ export const AccountPasswordDialog: React.FC<{
     <Dialog
       open={open}
       onClose={onClose}
-      title={password ? "Edit Text Password" : "Create Text Password"}
+      title={password ? "Edit Account Password" : "Create Account Password"}
     >
       <form
         className="flex flex-col gap-4"
