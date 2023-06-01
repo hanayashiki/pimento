@@ -108,8 +108,10 @@ export class Storage {
 
   async createObject<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
     model: Model<S, FK>,
-    data: ModelDO<Model<S>>,
+    _data: ModelDO<Model<S>>,
   ) {
+    const data = model.do.parse(_data);
+
     const pkValue = data[model.pk];
 
     await this.checkPk(model, data);
@@ -155,8 +157,10 @@ export class Storage {
   async updateObject<S extends ZodAnyObject, FK extends ForeignKeyMap = {}>(
     model: Model<S, FK>,
     pkValue: ModelDO<Model<S, FK>>[Model<S, FK>["pk"]],
-    data: Partial<ModelDO<Model<S, FK>>>,
+    _data: Partial<ModelDO<Model<S, FK>>>,
   ) {
+    const data = model.do.partial().parse(_data);
+
     const object = await this.readObjectByPk(model, pkValue);
 
     if (!object) {
