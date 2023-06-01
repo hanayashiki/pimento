@@ -3,7 +3,12 @@
 import { useContext } from "react";
 
 import gravatar from "gravatar";
+import { redirect } from "next/navigation";
+import { FiLogOut } from "react-icons/fi";
 
+import { logout } from "../_actions";
+import { useAction } from "@/lib/action/client";
+import { useDialog } from "@/lib/client/DialogProvider";
 import { MeContext } from "@/lib/client/MeProvider";
 
 const DesktopSidebar = () => {
@@ -76,6 +81,10 @@ export default function DashboardLayout({
 }) {
   const { me } = useContext(MeContext);
 
+  const { confirmMessage } = useDialog();
+
+  const logoutAction = useAction(logout);
+
   return (
     <section className="h-full flex flex-col">
       <nav className="py-2 px-4 border-b border-gray-400 flex items-center">
@@ -89,6 +98,22 @@ export default function DashboardLayout({
               className="w-6 h-6 rounded-full"
             />
             {me.email.split("@")[0]}
+            <button
+              className="hover:text-error"
+              onClick={async () => {
+                if (
+                  await confirmMessage({
+                    title: "Confirmation",
+                    message: "Do you really want to log out?",
+                  })
+                ) {
+                  await logoutAction.execute(undefined);
+                  redirect("/logout");
+                }
+              }}
+            >
+              <FiLogOut />
+            </button>
           </span>
         )}
 

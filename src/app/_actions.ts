@@ -3,7 +3,10 @@
 import { cache } from "react";
 
 import { errors } from "jose";
-import { RequestCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import {
+  RequestCookies,
+  ResponseCookies,
+} from "next/dist/compiled/@edge-runtime/cookies";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { pipe } from "remeda";
@@ -48,9 +51,20 @@ export const login = createAction({ input: LoginUser }, async (data) => {
   const userService = Service.get(UserService);
 
   const loginResponse = await userService.login(data);
-  (cookies() as RequestCookies).set("token", loginResponse.token);
+  (cookies() as any as ResponseCookies).set({
+    name: "token",
+    value: loginResponse.token,
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+    expires: new Date("9999-12-31"),
+  });
 
   return await userService.findUserByEmail(data.email);
+});
+
+export const logout = createAction({ input: z.undefined() }, async () => {
+  (cookies() as any as ResponseCookies).delete("token");
 });
 
 export const createAccount = createAction(
