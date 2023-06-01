@@ -26,7 +26,7 @@ export default async function RootLayout({
         <html lang="en" data-theme="dark">
           <body className={inter.className}>
             <DialogProvider>
-              <main className="min-h-screen h-screen">{children}</main>{" "}
+              <main className="min-h-screen h-screen">{children}</main>
             </DialogProvider>
           </body>
         </html>

@@ -48,7 +48,7 @@ export class PasswordService extends Service {
       "user_id",
       user.id,
     );
-    return sortBy(list, (x) => x.id).filter(
+    return sortBy(list, (x) => -x.id).filter(
       (x) => x.name.includes(search.search) || x.url.includes(search.search),
     );
   }
@@ -85,7 +85,7 @@ export class PasswordService extends Service {
       "user_id",
       user.id,
     );
-    return sortBy(list, (x) => x.id).filter(
+    return sortBy(list, (x) => -x.id).filter(
       (x) => x.name.includes(search.search) || x.url.includes(search.search),
     );
   }

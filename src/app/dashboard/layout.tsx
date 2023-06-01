@@ -120,10 +120,12 @@ export default function DashboardLayout({
         {!me && <span>Not Logged In</span>}
       </nav>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 shrink overflow-hidden">
         <DesktopSidebar />
 
-        {children}
+        <div className="flex flex-col flex-1 shrink overflow-hidden">
+          {children}
+        </div>
       </div>
     </section>
   );

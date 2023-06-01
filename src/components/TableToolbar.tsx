@@ -12,7 +12,7 @@ export const TableToolbar = ({
   onClickAdd: () => void;
 }) => {
   return (
-    <div className="mb-8 flex gap-x-4">
+    <div className="mb-5 sm:mb-8 flex gap-x-4">
       <input
         type="text"
         placeholder="Search here"

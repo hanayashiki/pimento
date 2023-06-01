@@ -2,6 +2,7 @@
 
 import { cache } from "react";
 
+import dayjs from "dayjs";
 import { errors } from "jose";
 import {
   RequestCookies,
@@ -55,9 +56,8 @@ export const login = createAction({ input: LoginUser }, async (data) => {
     name: "token",
     value: loginResponse.token,
     httpOnly: true,
-    secure: true,
     sameSite: "strict",
-    expires: new Date("9999-12-31"),
+    expires: dayjs().add(14, "day").toDate(),
   });
 
   return await userService.findUserByEmail(data.email);

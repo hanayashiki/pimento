@@ -33,14 +33,14 @@ const TextPasswordTable = () => {
   const [visibleIds, setVisibleIds] = useState<number[]>([]);
 
   return (
-    <div>
+    <div className="flex flex-col shrink overflow-hidden">
       <TableToolbar
         search={search}
         setSearch={setSearch}
         onClickAdd={() => setAddOpen(true)}
       />
 
-      <div className="overflow-x-auto">
+      <div className="overflow-auto shrink">
         <table
           className="table w-full"
           style={{ opacity: isPreviousData ? 0.8 : undefined }}
@@ -59,7 +59,7 @@ const TextPasswordTable = () => {
             {data?._tag === "Right" &&
               data.right.map((password, i) => (
                 <tr key={password.id}>
-                  <td>
+                  <th>
                     {i + 1}
 
                     <button
@@ -71,7 +71,7 @@ const TextPasswordTable = () => {
                     >
                       <VscEdit />
                     </button>
-                  </td>
+                  </th>
                   <td>{password.url}</td>
                   <td>{password.name}</td>
                   <td className="min-w-[100px]">

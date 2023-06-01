@@ -26,7 +26,7 @@ export default function LoginForm() {
           inputPassword,
         }))!;
         setPersistHashedPassword(await hashPassword(inputPassword, user.nonce));
-        location.href = "/dashboard";
+        location.pathname = "/dashboard";
       }}
       action="#"
     >

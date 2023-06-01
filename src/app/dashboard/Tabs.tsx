@@ -14,7 +14,7 @@ const Tabs = () => {
   const activeTab = searchParams.get("type") ?? passwordDefinitions[0].name;
 
   return (
-    <div className="flex flex-col flex-1 flex-shrink-0 min-w-0">
+    <div className="flex flex-col flex-1 flex-shrink overflow-hidden min-w-0">
       <div className="text-sm breadcrumbs p-4">
         <ul>
           <li>
@@ -39,7 +39,7 @@ const Tabs = () => {
         ))}
       </div>
 
-      <div className="px-4 py-6 flex-1">
+      <div className="px-4 py-6 flex-1 flex flex-col shrink overflow-hidden min-h-0">
         {activeTab === "TextPassword" && <TextPasswordTable />}
 
         {activeTab === "AccountPassword" && <AccountPasswordTable />}
