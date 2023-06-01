@@ -98,14 +98,8 @@ export default function DashboardLayout({
       <div className="flex flex-1">
         <DesktopSidebar />
 
-        {me && children}
+        {children}
       </div>
-
-      {!me && (
-        <div className="flex-1 flex items-center justify-center text-gray-400">
-          Taking you back to Login...
-        </div>
-      )}
     </section>
   );
 }

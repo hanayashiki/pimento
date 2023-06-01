@@ -46,6 +46,7 @@ export default function LoginForm() {
           name="email"
           id="email"
           onChange={clearErrors}
+          autoComplete="current-username"
         />
         <div className="text-error text-xs">{formErrors?.email?._errors}</div>
         <input
@@ -55,6 +56,7 @@ export default function LoginForm() {
           name="inputPassword"
           id="inputPassword"
           onChange={clearErrors}
+          autoComplete="current-password"
         />
         <div className="text-error text-xs">
           {formErrors?.inputPassword?._errors}
