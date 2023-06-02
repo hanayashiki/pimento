@@ -34,5 +34,3 @@ export default async function RootLayout({
     </Providers>
   );
 }
-
-export const runtime = "edge";
