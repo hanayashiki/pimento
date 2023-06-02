@@ -18,9 +18,9 @@ export const useSensitiveQuery = (
 
   const router = useRouter();
 
-  return useQuery(
-    ["sensitive", sensitive],
-    async () => {
+  return useQuery({
+    queryKey: ["sensitive", sensitive],
+    queryFn: async () => {
       const hashedPassword = getPersistHashedPassword();
 
       if (!hashedPassword) {
@@ -30,9 +30,7 @@ export const useSensitiveQuery = (
       const v = await fromSensitive(hashedPassword, me.nonce, sensitive);
       return v;
     },
-    {
-      staleTime: Infinity,
-      enabled,
-    },
-  );
+    staleTime: Infinity,
+    enabled,
+  });
 };

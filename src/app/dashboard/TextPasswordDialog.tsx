@@ -32,7 +32,7 @@ export const TextPasswordDialog: React.FC<{
   };
 
   const refresh = () => {
-    queryClient.invalidateQueries(["listTextPassword"]);
+    queryClient.invalidateQueries({ queryKey: ["listTextPassword"] });
   };
 
   const { me } = useMe();

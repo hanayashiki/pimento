@@ -52,6 +52,7 @@ export const login = createAction({ input: LoginUser }, async (data) => {
   const userService = Service.get(UserService);
 
   const loginResponse = await userService.login(data);
+
   (cookies() as any as ResponseCookies).set({
     name: "token",
     value: loginResponse.token,
@@ -75,7 +76,7 @@ export const createAccount = createAction(
     const user = await userService.createUser(data);
 
     const loginResponse = await userService.login(data);
-    (cookies() as RequestCookies).set("token", loginResponse.token);
+    (cookies() as any as RequestCookies).set("token", loginResponse.token);
 
     return user;
   },

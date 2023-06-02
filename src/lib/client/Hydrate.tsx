@@ -1,6 +1,6 @@
 "use client";
 
-import { Hydrate as OldHydrate } from "@tanstack/react-query";
+import { HydrationBoundary as OldHydrate } from "@tanstack/react-query";
 
 const Hydrate: typeof OldHydrate = (props) => <OldHydrate {...props} />;
 

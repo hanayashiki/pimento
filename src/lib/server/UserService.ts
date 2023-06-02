@@ -1,5 +1,3 @@
-import { createHmac, randomUUID } from "crypto";
-
 import * as jose from "jose";
 
 import { env } from "../env";
@@ -11,20 +9,39 @@ import {
   UserDO,
   UserModel,
 } from "../models";
+import { arrayBufferToBase64 } from "../Sensitive";
 import { Service } from "@/lib/server/Service";
 
 export class UserService extends Service {
   model = UserModel;
 
-  hashPassword(data: CreateUser, nonce: string) {
-    return createHmac("sha512", nonce)
-      .update(data.inputPassword)
-      .digest()
-      .toString("base64");
+  async hashPassword(data: CreateUser, nonce: string) {
+    const encoder = new TextEncoder();
+
+    const key = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(nonce),
+      {
+        name: "HMAC",
+        hash: { name: "SHA-512" },
+      },
+      false,
+      ["sign"],
+    );
+
+    const signature = await crypto.subtle.sign(
+      "HMAC",
+      key,
+      encoder.encode(data.inputPassword),
+    );
+
+    return arrayBufferToBase64(signature);
   }
 
   async createUser(data: CreateUser) {
-    const nonce = randomUUID();
+    const nonce = arrayBufferToBase64(
+      crypto.getRandomValues(new Uint8Array(16)),
+    );
 
     if (await this.findUserByEmail(data.email)) {
       throw new AppError(
@@ -41,7 +58,7 @@ export class UserService extends Service {
       ...data,
       id: await this.storage.nextSequence(this.model, "id"),
       nonce,
-      hashedPassword: this.hashPassword(data, nonce),
+      hashedPassword: await this.hashPassword(data, nonce),
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     });
@@ -69,7 +86,7 @@ export class UserService extends Service {
       );
     }
 
-    if (user.hashedPassword !== this.hashPassword(data, user.nonce)) {
+    if (user.hashedPassword !== (await this.hashPassword(data, user.nonce))) {
       throw new AppError(
         errorOfFormError<LoginUser>("Incorrect password. ", {
           _errors: [],

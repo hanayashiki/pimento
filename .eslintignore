@@ -2,5 +2,6 @@ babel.config.js
 .eslintrc.cjs
 tailwind.config.cjs
 tailwind.config.js
+postcss.config.js
 vite.config.ts
 dist/

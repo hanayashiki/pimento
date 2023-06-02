@@ -24,10 +24,10 @@ const AccountPasswordTable = () => {
     search,
   };
 
-  const { data, isPreviousData } = useQuery({
+  const { data, isPlaceholderData } = useQuery({
     queryKey: ["listAccountPassword", passwordSearch],
     queryFn: () => listAccountPassword(passwordSearch),
-    keepPreviousData: true,
+    placeholderData: (data) => data,
   });
 
   const [visibleIds, setVisibleIds] = useState<number[]>([]);
@@ -43,7 +43,7 @@ const AccountPasswordTable = () => {
       <div className="overflow-auto shrink">
         <table
           className="table w-full"
-          style={{ opacity: isPreviousData ? 0.8 : undefined }}
+          style={{ opacity: isPlaceholderData ? 0.8 : undefined }}
         >
           {/* head */}
           <thead>

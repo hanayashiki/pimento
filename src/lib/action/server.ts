@@ -14,7 +14,7 @@ export const createAction =
     action: FormAction<Schema, Success>,
   ): ((data: Schema) => Promise<ResultType<AppErrors, Success>>) =>
   async (data: Schema) => {
-    const result = await options.input.safeParse(data);
+    const result = options.input.safeParse(data);
     if (!result.success) {
       throw new AppError({
         code: "FORM_ERROR",

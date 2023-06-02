@@ -4,7 +4,7 @@ export const Sensitive = z.string().brand("Sensitive");
 
 export type Sensitive = z.infer<typeof Sensitive>;
 
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
+export function arrayBufferToBase64(buffer: ArrayBuffer): string {
   let binary = "";
   const bytes = new Uint8Array(buffer);
   const len = bytes.byteLength;
@@ -14,7 +14,7 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return globalThis.btoa(binary);
 }
 
-function base64ToArrayBuffer(base64: string) {
+export function base64ToArrayBuffer(base64: string) {
   var binaryString = atob(base64);
   var bytes = new Uint8Array(binaryString.length);
   for (var i = 0; i < binaryString.length; i++) {
