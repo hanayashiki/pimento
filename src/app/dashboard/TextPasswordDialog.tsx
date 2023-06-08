@@ -45,7 +45,7 @@ export const TextPasswordDialog: React.FC<{
 
   const urlRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const textRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
 
   return (
     <Dialog
@@ -109,10 +109,9 @@ export const TextPasswordDialog: React.FC<{
         />
 
         {password != null && textDecrypted.data != null && (
-          <input
-            className={cx("input input-bordered")}
+          <textarea
+            className={cx("textarea textarea-bordered")}
             placeholder="Text"
-            type="text"
             name="text"
             ref={textRef}
             defaultValue={textDecrypted.data}
@@ -121,10 +120,9 @@ export const TextPasswordDialog: React.FC<{
         )}
 
         {password == null && (
-          <input
-            className={cx("input input-bordered")}
+          <textarea
+            className={cx("textarea textarea-bordered")}
             placeholder="Text"
-            type="text"
             name="text"
             ref={textRef}
             onChange={clearErrors}
