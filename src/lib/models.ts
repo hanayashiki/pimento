@@ -154,6 +154,30 @@ export const AccountPasswordModel = defineModel({
   },
 });
 
+export const PaymentCardBrand = z.enum([
+  "Visa",
+  "Mastercard",
+  "Maestro",
+  "Discover",
+  "Diners Club",
+  "JCB",
+  "UnionPay",
+  "Amex",
+  "Other",
+]);
+
+export type PaymentCardBrand = z.infer<typeof PaymentCardBrand>;
+
+export const PaymentCardDO = BasePasswordDO.extend({
+  type: z.literal("PAYMENT_CARD"),
+  pan: Sensitive,
+  expirationDate: Sensitive,
+  cardholder: Sensitive,
+  cvv: Sensitive,
+  lastDigits: z.string(),
+  brand: PaymentCardBrand,
+});
+
 export type PasswordDefinition = {
   name: string;
   label: string;

@@ -8,15 +8,16 @@ import Hydrate from "@/lib/client/Hydrate";
 export default async function Page() {
   const queryClient = getQueryClient();
 
-  await queryClient.fetchQuery({
-    queryKey: ["listTextPassword", { search: "" }],
-    queryFn: () => listTextPassword({ search: "" }),
-  });
-
-  await queryClient.fetchQuery({
-    queryKey: ["listAccountPassword", { search: "" }],
-    queryFn: () => listAccountPassword({ search: "" }),
-  });
+  await Promise.all([
+    queryClient.fetchQuery({
+      queryKey: ["listTextPassword", { search: "" }],
+      queryFn: () => listTextPassword({ search: "" }),
+    }),
+    queryClient.fetchQuery({
+      queryKey: ["listAccountPassword", { search: "" }],
+      queryFn: () => listAccountPassword({ search: "" }),
+    }),
+  ]);
 
   const dehydratedState = dehydrate(queryClient);
 

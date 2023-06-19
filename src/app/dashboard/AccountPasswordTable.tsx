@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
+import { cx } from "classix";
 import dayjs from "dayjs";
 import { VscEdit } from "react-icons/vsc";
 
@@ -13,7 +14,7 @@ import { TableToolbar } from "@/components/TableToolbar";
 import { useDialogKey } from "@/lib/client/useDialogKey";
 import { AccountPasswordDO, PasswordSearch } from "@/lib/models";
 
-const AccountPasswordTable = () => {
+const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
   const [search, setSearch] = useState("");
 
   const [editTarget, setEditTarget] = useState<AccountPasswordDO>();
@@ -33,7 +34,12 @@ const AccountPasswordTable = () => {
   const [visibleIds, setVisibleIds] = useState<number[]>([]);
 
   return (
-    <div className="flex flex-col shrink overflow-hidden">
+    <div
+      className={cx(
+        "flex flex-col shrink overflow-hidden",
+        !active && "hidden",
+      )}
+    >
       <TableToolbar
         search={search}
         setSearch={setSearch}

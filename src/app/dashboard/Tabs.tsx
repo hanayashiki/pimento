@@ -40,9 +40,8 @@ const Tabs = () => {
       </div>
 
       <div className="px-4 py-6 flex-1 flex flex-col shrink overflow-hidden min-h-0">
-        {activeTab === "TextPassword" && <TextPasswordTable />}
-
-        {activeTab === "AccountPassword" && <AccountPasswordTable />}
+        <TextPasswordTable active={activeTab === "TextPassword"} />
+        <AccountPasswordTable active={activeTab === "AccountPassword"} />
       </div>
     </div>
   );

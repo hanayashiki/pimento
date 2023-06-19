@@ -3,5 +3,6 @@ babel.config.js
 tailwind.config.cjs
 tailwind.config.js
 postcss.config.js
+next.config.js
 vite.config.ts
 dist/
