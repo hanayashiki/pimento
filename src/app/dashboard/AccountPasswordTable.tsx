@@ -79,7 +79,15 @@ const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
                       <VscEdit />
                     </button>
                   </th>
-                  <td>{password.url}</td>
+                  <td>
+                    <a
+                      href={password.url}
+                      className="link link-accent"
+                      target="blank"
+                    >
+                      {password.url}
+                    </a>
+                  </td>
                   <td>{password.name}</td>
                   <td className="min-w-[100px]">
                     <SensitiveDisplay
