@@ -17,3 +17,5 @@ export default async function DashboardLayout({
 }
 
 export const runtime = "edge";
+
+export const preferredRegion = ["sin1"];
