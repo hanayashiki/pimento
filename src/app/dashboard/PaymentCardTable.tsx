@@ -34,7 +34,7 @@ const CardNumberDisplay = ({
     password.brand !== "Other" ? paymentCardMetaMap[password.brand] : undefined;
 
   return (
-    <div>
+    <div className="pt-[5px] pr-[20px]">
       <div className="flex">
         {meta && (
           <img
