@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { cx } from "classix";
@@ -22,6 +22,8 @@ export const TextPasswordDialog: React.FC<{
   open: boolean;
   onClose: () => void;
 }> = ({ password, open, onClose }) => {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   const createAction = useAction(createTextPassword);
   const updateAction = useAction(updateTextPassword);
   const deleteAction = useAction(deleteTextPassword);
@@ -140,17 +142,29 @@ export const TextPasswordDialog: React.FC<{
             {password ? "EDIT" : "CREATE"}
           </button>
 
-          {password && (
-            <button
-              className={cx("btn btn-error", deleteAction.loading && "loading")}
-              type="button"
-              onClick={() =>
-                deleteAction.execute(password.id).then(refresh).then(onClose)
-              }
-            >
-              DELETE
-            </button>
-          )}
+          {password &&
+            (confirmDelete ? (
+              <button
+                className={cx(
+                  "btn btn-error",
+                  deleteAction.loading && "loading",
+                )}
+                type="button"
+                onClick={() =>
+                  deleteAction.execute(password.id).then(refresh).then(onClose)
+                }
+              >
+                CONFIRM DELETE
+              </button>
+            ) : (
+              <button
+                className={"btn btn-error"}
+                type="button"
+                onClick={() => setConfirmDelete(true)}
+              >
+                DELETE
+              </button>
+            ))}
 
           <button className="btn" onClick={onClose} type="button">
             CANCEL

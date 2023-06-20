@@ -30,7 +30,7 @@ export interface PaymentCardMeta {
   regex: RegExp;
 }
 
-export const PaymentCardMetaMap: Record<
+export const paymentCardMetaMap: Record<
   Exclude<PaymentCardBrand, "Other">,
   PaymentCardMeta
 > = {
@@ -96,3 +96,63 @@ export const PaymentCardMetaMap: Record<
     regex: /^3[47]/,
   },
 };
+
+export function normalizePan(pan: string) {
+  return pan.replace(/\s+/g, "");
+}
+
+export function formatPan(
+  selection: number,
+  pan: string,
+  rules: PaymentCardRuleEntry[],
+): [number, string] {
+  const normalized = normalizePan(pan);
+  const normalizedBeforeSelection = normalizePan(pan.slice(0, selection));
+
+  const normalizedSelection = normalizedBeforeSelection.length;
+  let nextSelection = normalizedSelection;
+
+  const matchedRule =
+    rules.find((r) => r.cardLength === normalized.length) ?? rules[0];
+
+  let formatted = "";
+
+  for (let i = 0, acc = 0; i < matchedRule.blocks.length; i++) {
+    const block = normalized.slice(acc, acc + matchedRule.blocks[i]);
+    if (block) {
+      if (i !== 0) {
+        formatted += " ";
+
+        if (acc + matchedRule.blocks[i] <= normalizedSelection) {
+          nextSelection += 1;
+        }
+      }
+
+      formatted += block;
+      acc += matchedRule.blocks[i];
+    }
+  }
+  nextSelection += 1;
+  return [nextSelection, formatted];
+}
+
+export function normalizeExpirationDate(expirationDate: string) {
+  return expirationDate.replace(/\s+/g, "");
+}
+
+export function formatExpirationDate(
+  selection: number,
+  expirationDate: string,
+): [number, string] {
+  const normalized = normalizeExpirationDate(expirationDate);
+
+  if (!normalized.includes("/")) return [0, "__/__"];
+
+  return [
+    expirationDate[selection + 1] === "/" ? selection + 1 : selection,
+    `${normalized.split("/")[0].slice(0, 2).padEnd(2, "_")}/${normalized
+      .split("/")[1]
+      .slice(0, 2)
+      .padEnd(2, "_")}`,
+  ];
+}

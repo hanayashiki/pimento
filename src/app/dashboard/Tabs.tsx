@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 import AccountPasswordTable from "./AccountPasswordTable";
+import PaymentCardTable from "./PaymentCardTable";
 import TextPasswordTable from "./TextPasswordTable";
 import { passwordDefinitions } from "@/lib/models";
 
@@ -42,6 +43,7 @@ const Tabs = () => {
       <div className="px-4 py-6 flex-1 flex flex-col shrink overflow-hidden min-h-0">
         <TextPasswordTable active={activeTab === "TextPassword"} />
         <AccountPasswordTable active={activeTab === "AccountPassword"} />
+        <PaymentCardTable active={activeTab === "PaymentCard"} />
       </div>
     </div>
   );

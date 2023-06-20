@@ -1,7 +1,11 @@
 import { dehydrate } from "@tanstack/query-core";
 
 import Tabs from "./Tabs";
-import { listAccountPassword, listTextPassword } from "../_actions";
+import {
+  listAccountPassword,
+  listPaymentCard,
+  listTextPassword,
+} from "../_actions";
 import getQueryClient from "../getQueryClient";
 import Hydrate from "@/lib/client/Hydrate";
 
@@ -16,6 +20,10 @@ export default async function Page() {
     queryClient.fetchQuery({
       queryKey: ["listAccountPassword", { search: "" }],
       queryFn: () => listAccountPassword({ search: "" }),
+    }),
+    queryClient.fetchQuery({
+      queryKey: ["listPaymentCard", { search: "" }],
+      queryFn: () => listPaymentCard({ search: "" }),
     }),
   ]);
 

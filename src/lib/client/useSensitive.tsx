@@ -1,4 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 import {
@@ -10,15 +12,19 @@ import { useMe } from "@/lib/client/MeProvider";
 
 export const useSensitiveQuery = (
   sensitive: Sensitive,
-  options: { enabled?: boolean } = {},
+  options: Omit<
+    UseQueryOptions<string, Error, string, string[]> & {
+      initialData?: undefined;
+      onSuccess?: (v: string) => void;
+    },
+    "queryKey" | "queryFn"
+  > = {},
 ) => {
-  const { enabled = true } = options;
-
   const { me } = useMe();
 
   const router = useRouter();
 
-  return useQuery({
+  const result = useQuery({
     queryKey: ["sensitive", sensitive],
     queryFn: async () => {
       const hashedPassword = getPersistHashedPassword();
@@ -31,6 +37,14 @@ export const useSensitiveQuery = (
       return v;
     },
     staleTime: Infinity,
-    enabled,
+    ...options,
   });
+
+  useEffect(() => {
+    if (result.data !== undefined) {
+      options?.onSuccess?.(result.data);
+    }
+  }, [options?.onSuccess && result.data, options?.onSuccess]);
+
+  return result;
 };

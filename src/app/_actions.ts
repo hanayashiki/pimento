@@ -23,6 +23,8 @@ import {
   PasswordSearch,
   CreateAccountPassword,
   UpdateAccountPassword,
+  CreatePaymentCard,
+  UpdatePaymentCard,
 } from "@/lib/models";
 import { PasswordService } from "@/lib/server/PasswordService";
 import { Service } from "@/lib/server/Service";
@@ -156,7 +158,7 @@ export const listAccountPassword = createAction(
 
     const passwordService = Service.get(PasswordService);
 
-    return await passwordService.listAccountPasswords(user, input);
+    return await passwordService.listAccountPassword(user, input);
   },
 );
 
@@ -187,5 +189,46 @@ export const deleteAccountPassword = createAction(
     const passwordService = Service.get(PasswordService);
 
     return await passwordService.deleteAccountPassword(user, id);
+  },
+);
+
+// PaymentCard
+export const listPaymentCard = createAction(
+  { input: PasswordSearch },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return await passwordService.listPaymentCard(user, input);
+  },
+);
+
+export const createPaymentCard = createAction(
+  { input: CreatePaymentCard },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return await passwordService.createPaymentCard(user, input);
+  },
+);
+
+export const updatePaymentCard = createAction(
+  { input: UpdatePaymentCard },
+  async (input) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return passwordService.updatePaymentCard(user, input);
+  },
+);
+
+export const deletePaymentCard = createAction(
+  { input: z.number() },
+  async (id) => {
+    const user = await requireUser();
+    const passwordService = Service.get(PasswordService);
+
+    return await passwordService.deletePaymentCard(user, id);
   },
 );

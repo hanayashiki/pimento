@@ -174,8 +174,49 @@ export const PaymentCardDO = BasePasswordDO.extend({
   expirationDate: Sensitive,
   cardholder: Sensitive,
   cvv: Sensitive,
-  lastDigits: z.string(),
+  lastDigits: z.coerce.string(),
   brand: PaymentCardBrand,
+});
+
+export type PaymentCardDO = z.infer<typeof PaymentCardDO>;
+
+export const CreatePaymentCard = PaymentCardDO.pick({
+  url: true,
+  type: true,
+  name: true,
+  pan: true,
+  expirationDate: true,
+  cardholder: true,
+  cvv: true,
+  lastDigits: true,
+  brand: true,
+});
+
+export type CreatePaymentCard = z.infer<typeof CreatePaymentCard>;
+
+export const UpdatePaymentCard = PaymentCardDO.pick({
+  id: true,
+  url: true,
+  type: true,
+  name: true,
+  pan: true,
+  expirationDate: true,
+  cardholder: true,
+  cvv: true,
+  lastDigits: true,
+  brand: true,
+});
+
+export type UpdatePaymentCard = z.infer<typeof UpdatePaymentCard>;
+
+export const PaymentCardModel = defineModel({
+  name: "PaymentCard",
+  do: PaymentCardDO,
+  pk: "id",
+  uniqueIndices: [],
+  fks: {
+    user_id: UserModel,
+  },
 });
 
 export type PasswordDefinition = {
@@ -191,6 +232,10 @@ export const passwordDefinitions = [
   {
     name: "AccountPassword",
     label: "account",
+  },
+  {
+    name: "PaymentCard",
+    label: "payment card",
   },
 ] as const satisfies readonly PasswordDefinition[];
 
