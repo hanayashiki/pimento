@@ -10,8 +10,10 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
 import { PaymentCardDialog } from "./PaymentCardDialog";
 import { listPaymentCard } from "../_actions";
+import { OrderButton } from "@/components/OrderButton";
 import { TableToolbar } from "@/components/TableToolbar";
 import { useDialogKey } from "@/lib/client/useDialogKey";
+import { useOrders } from "@/lib/client/useOrders";
 import { useSensitiveQuery } from "@/lib/client/useSensitive";
 import { formatPan, paymentCardMetaMap } from "@/lib/data/paymentCard";
 import { PasswordSearch, PaymentCardDO } from "@/lib/models";
@@ -111,8 +113,11 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
+  const orders = useOrders();
+
   const passwordSearch: PasswordSearch = {
     search,
+    orders: orders.orders,
   };
 
   const { data, isPlaceholderData } = useQuery({
@@ -145,10 +150,21 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
           <thead>
             <tr>
               <th></th>
-              <th>URL</th>
-              <th>NAME</th>
-              <th>CARD NUMBER</th>
-              <th>CREATED</th>
+              <th>
+                URL
+                <OrderButton orderKey="url" orders={orders} />
+              </th>
+              <th>
+                NAME
+                <OrderButton orderKey="name" orders={orders} />
+              </th>
+              <th>
+                CARD NUMBER
+                <OrderButton orderKey="brand" orders={orders} />
+              </th>
+              <th>
+                CREATED <OrderButton orderKey="created_at" orders={orders} />
+              </th>
             </tr>
           </thead>
           <tbody>

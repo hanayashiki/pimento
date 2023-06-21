@@ -15,15 +15,15 @@ export default async function Page() {
   await Promise.all([
     queryClient.fetchQuery({
       queryKey: ["listTextPassword", { search: "" }],
-      queryFn: () => listTextPassword({ search: "" }),
+      queryFn: () => listTextPassword({ search: "", orders: [] }),
     }),
     queryClient.fetchQuery({
       queryKey: ["listAccountPassword", { search: "" }],
-      queryFn: () => listAccountPassword({ search: "" }),
+      queryFn: () => listAccountPassword({ search: "", orders: [] }),
     }),
     queryClient.fetchQuery({
       queryKey: ["listPaymentCard", { search: "" }],
-      queryFn: () => listPaymentCard({ search: "" }),
+      queryFn: () => listPaymentCard({ search: "", orders: [] }),
     }),
   ]);
 

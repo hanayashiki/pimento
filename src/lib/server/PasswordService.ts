@@ -20,6 +20,16 @@ import {
 } from "../models";
 
 export class PasswordService extends Service {
+  orderBy<T>(items: T[], search: PasswordSearch): T[] {
+    return sortBy(
+      items,
+      ...search.orders.map(
+        (order) => [(item: any) => item[order.key], order.orderBy] as const,
+      ),
+      (item: any) => -item.id,
+    );
+  }
+
   async createTextPassword(user: UserDO, data: CreateTextPassword) {
     const doData: TextPasswordDO = {
       ...data,
@@ -52,7 +62,7 @@ export class PasswordService extends Service {
       "user_id",
       user.id,
     );
-    return sortBy(list, (x) => -x.id).filter(
+    return this.orderBy(list, search).filter(
       (x) =>
         x.name
           .toLocaleLowerCase()
@@ -93,7 +103,7 @@ export class PasswordService extends Service {
       "user_id",
       user.id,
     );
-    return sortBy(list, (x) => -x.id).filter(
+    return this.orderBy(list, search).filter(
       (x) =>
         x.name
           .toLocaleLowerCase()
@@ -135,7 +145,7 @@ export class PasswordService extends Service {
       user.id,
     );
 
-    return sortBy(list, (x) => -x.id).filter(
+    return this.orderBy(list, search).filter(
       (x) =>
         x.name
           .toLocaleLowerCase()

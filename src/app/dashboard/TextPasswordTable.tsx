@@ -9,9 +9,11 @@ import { VscEdit } from "react-icons/vsc";
 
 import { TextPasswordDialog } from "./TextPasswordDialog";
 import { listTextPassword } from "../_actions";
+import { OrderButton } from "@/components/OrderButton";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
 import { TableToolbar } from "@/components/TableToolbar";
 import { useDialogKey } from "@/lib/client/useDialogKey";
+import { useOrders } from "@/lib/client/useOrders";
 import { PasswordSearch, TextPasswordDO } from "@/lib/models";
 
 const TextPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
@@ -21,8 +23,11 @@ const TextPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
+  const orders = useOrders();
+
   const passwordSearch: PasswordSearch = {
     search,
+    orders: orders.orders,
   };
 
   const { data, isPlaceholderData } = useQuery({
@@ -55,10 +60,18 @@ const TextPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
           <thead>
             <tr>
               <th></th>
-              <th>URL</th>
-              <th>NAME</th>
+              <th>
+                URL
+                <OrderButton orderKey="url" orders={orders} />
+              </th>
+              <th>
+                NAME
+                <OrderButton orderKey="name" orders={orders} />
+              </th>
               <th>TEXT</th>
-              <th>CREATED</th>
+              <th>
+                CREATED <OrderButton orderKey="created_at" orders={orders} />
+              </th>
             </tr>
           </thead>
           <tbody>

@@ -239,8 +239,18 @@ export const passwordDefinitions = [
   },
 ] as const satisfies readonly PasswordDefinition[];
 
+export const PasswordOrderBy = z.enum(["asc", "desc"]);
+
+export const PasswordOrder = z.object({
+  key: z.string(),
+  orderBy: PasswordOrderBy,
+});
+
+export type PasswordOrder = z.infer<typeof PasswordOrder>;
+
 export const PasswordSearch = z.object({
   search: z.string(),
+  orders: PasswordOrder.array(),
 });
 
 export type PasswordSearch = z.infer<typeof PasswordSearch>;
