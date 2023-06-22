@@ -16,7 +16,7 @@ export default function CreateAccountForm() {
   const { dialogContext } = useDialog();
 
   return (
-   <form
+    <form
       className="flex flex-col card bg-gray-800 shadow-xl"
       onSubmit={async (e) => {
         e.stopPropagation();
