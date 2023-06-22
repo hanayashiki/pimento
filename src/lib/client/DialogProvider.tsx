@@ -71,6 +71,7 @@ export const DialogProvider = ({ children }: { children: React.ReactNode }) => {
 export const useDialog = () => {
   const dialogContext = useContext(DialogContext);
   return {
+    dialogContext,
     async confirmMessage(message: Pick<DialogMessage, "title" | "message">) {
       return new Promise<boolean>((resolve) => {
         dialogContext.setMessage({

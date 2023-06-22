@@ -4,15 +4,19 @@ import { cx } from "classix";
 import Link from "next/link";
 
 import { createAccount } from "@/app/_actions";
+import { RelatedLinks } from "@/components/RelatedLinks";
 import { useAction } from "@/lib/action/client";
+import { useDialog } from "@/lib/client/DialogProvider";
 import { hashPassword, setPersistHashedPassword } from "@/lib/Sensitive";
 
 export default function CreateAccountForm() {
   const { formErrors, loading, clearErrors, execute } =
     useAction(createAccount);
 
+  const { dialogContext } = useDialog();
+
   return (
-    <form
+   <form
       className="flex flex-col card bg-gray-800 shadow-xl"
       onSubmit={async (e) => {
         e.stopPropagation();
@@ -21,6 +25,29 @@ export default function CreateAccountForm() {
         const inputPassword = (
           document.getElementById("inputPassword") as HTMLInputElement
         ).value;
+
+        if (
+          !(await new Promise<boolean>((resolve) => {
+            dialogContext.setMessage({
+              title: "Password not recoverable",
+              message:
+                "If you lose your password, you lose complete access to your account and data, since it is not technically possible to recover your data.",
+              buttons: [
+                {
+                  title: "PROCEED",
+                  className: "btn-accent",
+                  action: () => resolve(true),
+                },
+                {
+                  title: "LET ME SEE...",
+                  action: () => resolve(false),
+                },
+              ],
+            });
+          }))
+        ) {
+          return;
+        }
 
         const user = (await execute({
           email: (document.getElementById("email") as HTMLInputElement).value,
@@ -76,6 +103,10 @@ export default function CreateAccountForm() {
           <button className={cx("btn btn-accent", loading && "loading")}>
             Create Account
           </button>
+        </div>
+
+        <div className="flex justify-center mt-[1.5rem]">
+          <RelatedLinks />
         </div>
       </div>
     </form>

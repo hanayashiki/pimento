@@ -4,6 +4,7 @@ import { cx } from "classix";
 import Link from "next/link";
 
 import { login } from "@/app/_actions";
+import { RelatedLinks } from "@/components/RelatedLinks";
 import { useAction } from "@/lib/action/client";
 import { hashPassword, setPersistHashedPassword } from "@/lib/Sensitive";
 
@@ -70,9 +71,15 @@ export default function LoginForm() {
         </div>
 
         <div className="card-actions justify-center mt-4">
-          <button className={cx("btn btn-primary", loading && "loading")}>
+          <button
+            className={cx("btn btn-primary w-[150px]", loading && "loading")}
+          >
             Log In
           </button>
+        </div>
+
+        <div className="flex justify-center mt-[1.5rem]">
+          <RelatedLinks />
         </div>
       </div>
     </form>

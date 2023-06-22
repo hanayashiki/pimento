@@ -19,6 +19,14 @@ export default function RootLayout({
   return (
     <Providers>
       <html lang="en" data-theme="dark">
+        <head>
+          <script
+            defer
+            data-domain="pimento.cwang.io"
+            src="https://plausible.monoid.co.jp/js/script.js"
+          />
+        </head>
+
         <body className={inter.className}>
           <DialogProvider>
             <main className="min-h-screen h-screen">{children}</main>
