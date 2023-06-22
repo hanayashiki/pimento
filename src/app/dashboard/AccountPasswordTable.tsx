@@ -91,13 +91,15 @@ const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
                     </button>
                   </th>
                   <td>
-                    <a
-                      href={password.url}
-                      className="link link-accent"
-                      target="blank"
-                    >
-                      {password.url}
-                    </a>
+                    {password.url && (
+                      <a
+                        href={password.url}
+                        className="link link-accent"
+                        target="blank"
+                      >
+                        {password.url}
+                      </a>
+                    )}
                   </td>
                   <td>{password.name}</td>
                   <td className="min-w-[100px]">
