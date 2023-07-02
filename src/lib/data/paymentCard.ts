@@ -87,7 +87,7 @@ export const paymentCardMetaMap: Record<
     lightImage: unionPayLight,
     darkImage: unionPayDark,
     rules: [{ cardLength: 16, blocks: [4, 4, 4, 4] }],
-    regex: /^62|60/,
+    regex: /^62|^60/,
   },
   Amex: {
     lightImage: amexLight,
