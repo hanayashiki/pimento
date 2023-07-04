@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import AccountPasswordTable from "./AccountPasswordTable";
 import PaymentCardTable from "./PaymentCardTable";
 import TextPasswordTable from "./TextPasswordTable";
+import { RelatedLinks } from "@/components/RelatedLinks";
 import { passwordDefinitions } from "@/lib/models";
 
 const Tabs = () => {
@@ -40,10 +41,15 @@ const Tabs = () => {
         ))}
       </div>
 
-      <div className="px-4 py-6 flex-1 flex flex-col shrink overflow-hidden min-h-0">
+      <div className="px-4 py-4 sm:py-6 flex-1 flex flex-col shrink overflow-hidden min-h-0">
         <TextPasswordTable active={activeTab === "TextPassword"} />
         <AccountPasswordTable active={activeTab === "AccountPassword"} />
         <PaymentCardTable active={activeTab === "PaymentCard"} />
+
+        <div className="flex-1" />
+        <div className="pt-3 sm:py-6 px-2 flex justify-center sm:justify-start">
+          <RelatedLinks />
+        </div>
       </div>
     </div>
   );

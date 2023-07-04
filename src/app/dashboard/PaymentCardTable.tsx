@@ -141,7 +141,7 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
         onClickAdd={() => setAddOpen(true)}
       />
 
-      <div className="overflow-auto shrink">
+      <div className="overflow-auto shrink rounded-[1rem]">
         <table
           className="table w-full"
           style={{ opacity: isPlaceholderData ? 0.8 : undefined }}
