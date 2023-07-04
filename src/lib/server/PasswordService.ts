@@ -23,9 +23,9 @@ export class PasswordService extends Service {
   orderBy<T>(items: T[], search: PasswordSearch): T[] {
     return sortBy(
       items,
-      ...search.orders.map(
+      ...(search.orders.map(
         (order) => [(item: any) => item[order.key], order.orderBy] as const,
-      ),
+      ) as []),
       (item: any) => -item.id,
     );
   }
