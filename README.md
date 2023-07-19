@@ -15,7 +15,7 @@
 
 3. Host it yourself. Simple hosting with NextJS and Redis.
 
-4. Blooding-edge server side rendering using React Server Component on Edge Runtime. Opens in a flash with lowest cost.
+4. Bleeding-edge server side rendering using React Server Component on Edge Runtime. Opens in a flash with lowest cost.
 
 5. DaisyUI + TailwindCSS
 
