@@ -1,6 +1,11 @@
 # Pimento
 
-*Simple Password Manager*
+<h3 align="center">
+<i><a href="https://pimento.cwang.io">Simple Password Manager Web App</a></i>
+</h3>
+
+[![frame](https://github.com/hanayashiki/pimento/assets/26056783/7f7b9146-20f4-46d0-9ab4-53297ae0762e)](https://pimento.cwang.io)
+
 
 ## Features
 
@@ -10,7 +15,7 @@
 
 3. Host it yourself. Simple hosting with NextJS and Redis.
 
-4. Blooding-edge server side rendering using React Server Component on Edge Runtime. Opens in a flash with lowest cost.
+4. Bleeding-edge server side rendering using React Server Component on Edge Runtime. Opens in a flash with lowest cost.
 
 5. DaisyUI + TailwindCSS
 
