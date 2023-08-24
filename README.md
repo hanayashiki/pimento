@@ -6,6 +6,10 @@
 
 [![frame](https://github.com/hanayashiki/pimento/assets/26056783/7f7b9146-20f4-46d0-9ab4-53297ae0762e)](https://pimento.cwang.io)
 
+## Why this name?
+
+"Password manager", if shortend to P-Man, sounds the same like "piman" meaning "green pepper" in Japanese.
+"Pimento" is the Spanish-origin English word meaning "green pepper", thus the name.
 
 ## Features
 
