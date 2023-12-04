@@ -34,13 +34,33 @@ export const defineModel = <
   model: Model<S, FK>,
 ) => model;
 
+const autoDeserializeRawObject = <T>(rawObject: T): T => {
+  if (typeof rawObject === "object" && !!rawObject) {
+    for (const [k, v] of Object.entries(rawObject)) {
+      try {
+        if (typeof v === "string") {
+          const parsed = JSON.parse(v);
+          (rawObject as any)[k] = parsed;
+        }
+      } catch (e) {}
+    }
+  }
+  return rawObject;
+};
+
 export class ErrorPk extends Error {
-  constructor(public model: AnyModel, public pkValue: any) {
+  constructor(
+    public model: AnyModel,
+    public pkValue: any,
+  ) {
     super(`${StorageHelpers.getPkKeyName(model, pkValue)} already exists`);
   }
 }
 export class ErrorPkNotExist extends Error {
-  constructor(public model: AnyModel, public pkValue: any) {
+  constructor(
+    public model: AnyModel,
+    public pkValue: any,
+  ) {
     super(`${StorageHelpers.getPkKeyName(model, pkValue)} does not exists`);
   }
 }
@@ -229,8 +249,7 @@ export class Storage {
     const rawObject = await this.kv.hgetall(
       StorageHelpers.getPkKeyName(model, pkValue),
     );
-
-    return model.do.parse(rawObject);
+    return model.do.parse(autoDeserializeRawObject(rawObject));
   }
 
   async readObjectByIndex<S extends ZodAnyObject>(
@@ -265,7 +284,7 @@ export class Storage {
       this.kv.pipeline(),
     ).exec();
 
-    return manyModel.do.array().parse(objects);
+    return manyModel.do.array().parse(objects.map(autoDeserializeRawObject));
   }
 
   async checkPk(model: AnyModel, data: AnyData) {
