@@ -13,10 +13,12 @@ export const SensitiveDisplay = ({
   sensitive,
   visible,
   onChangeVisible,
+  newLineAfterCopy,
 }: {
   sensitive: Sensitive;
   visible: boolean;
   onChangeVisible: (v: boolean) => void;
+  newLineAfterCopy?: boolean;
 }) => {
   const decryptQuery = useSensitiveQuery(sensitive);
 
@@ -49,6 +51,8 @@ export const SensitiveDisplay = ({
           </button>
 
           {copyButton}
+
+          {newLineAfterCopy && <br />}
 
           {decryptQuery.data ?? (
             <span
