@@ -1,4 +1,4 @@
-import { Redis } from "@upstash/redis";
+import { Redis } from "@upstash/redis/cloudflare";
 import { pipe, reduce } from "remeda";
 import { z } from "zod";
 
