@@ -62,8 +62,9 @@ const CardNumberDisplay = ({
       </div>
 
       {visible && (
-        <div className="mt-[0.25rem]">
+        <div className="mt-[0.25rem] sm:text-sm">
           <span
+            className="sm:text-base text-lg"
             onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
@@ -72,18 +73,14 @@ const CardNumberDisplay = ({
           </span>
 
           <br />
-          <span
-            className="text-sm"
-            onDoubleClick={(e) => {
+          <span onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
           >
             {expirationDate}
           </span>
           <br />
-          <span
-            className="text-sm"
-            onDoubleClick={(e) => {
+          <span onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
           >
@@ -92,9 +89,7 @@ const CardNumberDisplay = ({
 
           <br />
 
-          <span
-            className="text-sm"
-            onDoubleClick={(e) => {
+          <span onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
           >
@@ -141,7 +136,8 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
         onClickAdd={() => setAddOpen(true)}
       />
 
-      <div className="overflow-auto shrink rounded-[1rem]">
+      {/* Desktop */}
+      <div className="overflow-auto shrink rounded-[1rem] hidden sm:block">
         <table
           className="table w-full"
           style={{ opacity: isPlaceholderData ? 0.8 : undefined }}
@@ -214,6 +210,52 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
               ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile */}
+      <div className="overflow-auto shrink rounded-[1rem] sm:hidden flex flex-col gap-y-[1rem]">
+        {data?._tag === "Right" &&
+          data.right.map((password) => (
+            <div className="card bg-base-300 shadow-xl" key={password.id}>
+              <div className="card-body">
+                <h2 className="card-title mb-[0.5rem]">
+                  <a
+                    target="_blank"
+                    className={
+                      password.url ? "text-accent underline" : undefined
+                    }
+                    href={password.url ? password.url : undefined}
+                  >
+                    {password.name}
+                  </a>
+
+                  <div className="flex-1" />
+                  <button
+                    className="ml-[1rem] hover:text-primary"
+                    onClick={() => {
+                      setEditTarget(password);
+                      setEditOpen(true);
+                    }}
+                  >
+                    <VscEdit />
+                  </button>
+                </h2>
+
+                <CardNumberDisplay
+                  visible={visibleIds.includes(password.id)}
+                  password={password}
+                  onChangeVisible={() => {
+                    setVisibleIds(
+                      visibleIds.includes(password.id)
+                        ? visibleIds.filter((i) => i !== password.id)
+                        : [...visibleIds, password.id],
+                    );
+                  }}
+                />
+
+              </div>
+            </div>
+          ))}
       </div>
 
       <PaymentCardDialog
