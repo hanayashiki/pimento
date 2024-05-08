@@ -1,4 +1,4 @@
-import { VercelKV, createClient } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
 import { pipe, reduce } from "remeda";
 import { z } from "zod";
 
@@ -113,10 +113,10 @@ export class StorageHelpers {
 }
 
 export class Storage {
-  kv: VercelKV;
+  kv: Redis;
 
   constructor() {
-    this.kv = createClient({
+    this.kv = new Redis({
       url: env.KV2_REST_API_URL,
       token: env.KV2_REST_API_TOKEN,
     });
