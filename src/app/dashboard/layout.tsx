@@ -1,5 +1,5 @@
 import { ClientLayout } from "./ClientLayout";
-import { getUser } from "@/app/_actions";
+import { requireUser } from "@/app/_actions";
 import { MeProvider } from "@/lib/client/MeProvider";
 
 export default async function DashboardLayout({
@@ -7,7 +7,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const me = await getUser();
+  const me = await requireUser();
 
   return (
     <MeProvider value={{ me }}>
