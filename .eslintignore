@@ -6,3 +6,4 @@ postcss.config.js
 next.config.js
 vite.config.ts
 dist/
+.env
