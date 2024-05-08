@@ -73,14 +73,16 @@ const CardNumberDisplay = ({
           </span>
 
           <br />
-          <span onDoubleClick={(e) => {
+          <span
+            onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
           >
             {expirationDate}
           </span>
           <br />
-          <span onDoubleClick={(e) => {
+          <span
+            onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
           >
@@ -89,7 +91,8 @@ const CardNumberDisplay = ({
 
           <br />
 
-          <span onDoubleClick={(e) => {
+          <span
+            onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
             }}
           >
@@ -252,7 +255,6 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
                     );
                   }}
                 />
-
               </div>
             </div>
           ))}
