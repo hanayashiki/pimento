@@ -11,6 +11,7 @@ import { useDebounceValue } from "usehooks-ts";
 
 import { PaymentCardDialog } from "./PaymentCardDialog";
 import { listPaymentCard } from "../_actions";
+import { ClientOnly } from "@/components/ClientOnly";
 import { OrderButton } from "@/components/OrderButton";
 import { TableToolbar } from "@/components/TableToolbar";
 import { useDialogKey } from "@/lib/client/useDialogKey";
@@ -211,7 +212,9 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
                     />
                   </td>
                   <td>
-                    {dayjs(password.created_at).format("YYYY/MM/DD HH:mm")}
+                    <ClientOnly>
+                      {dayjs(password.created_at).format("YYYY/MM/DD HH:mm")}
+                    </ClientOnly>
                   </td>
                 </tr>
               ))}

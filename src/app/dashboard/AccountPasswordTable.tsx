@@ -10,6 +10,7 @@ import { useDebounceValue } from "usehooks-ts";
 
 import { AccountPasswordDialog } from "./AccountPasswordDialog";
 import { listAccountPassword } from "../_actions";
+import { ClientOnly } from "@/components/ClientOnly";
 import { OrderButton } from "@/components/OrderButton";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
 import { TableToolbar } from "@/components/TableToolbar";
@@ -133,7 +134,9 @@ const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
                     />
                   </td>
                   <td>
-                    {dayjs(password.created_at).format("YYYY/MM/DD HH:mm")}
+                    <ClientOnly>
+                      {dayjs(password.created_at).format("YYYY/MM/DD HH:mm")}
+                    </ClientOnly>
                   </td>
                 </tr>
               ))}
