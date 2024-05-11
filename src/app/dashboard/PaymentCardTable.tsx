@@ -114,7 +114,7 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
 
   const orders = useOrders();
 
-  const [debouncedSearch] = useDebounceValue(search, 500);
+  const [debouncedSearch] = useDebounceValue(search, 100);
 
   const passwordSearch: PasswordSearch = {
     search: debouncedSearch,

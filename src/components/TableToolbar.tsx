@@ -104,12 +104,14 @@ export const TableToolbar = ({
       }
     }
 
-    window.addEventListener("click", handleClick);
+    if (open) {
+      window.addEventListener("click", handleClick);
 
-    return () => {
-      window.removeEventListener("click", handleClick);
-    };
-  }, [referenceElement, popperElement, search]);
+      return () => {
+        window.removeEventListener("click", handleClick);
+      };
+    }
+  }, [referenceElement, popperElement, search, open]);
 
   useEffect(() => {
     if (focusedIndex > listSearchHistoryItems.length - 1) {
