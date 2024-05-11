@@ -8,6 +8,7 @@ import cx from "classix";
 import { MdOutlineDelete, MdClose } from "react-icons/md";
 import { VscAdd } from "react-icons/vsc";
 import { usePopper } from "react-popper";
+import { identity } from "remeda";
 import { useDebounceCallback, useDebounceValue } from "usehooks-ts";
 
 import * as actions from "@/app/_actions";
@@ -56,7 +57,7 @@ export const TableToolbar = ({
     useCallback(
       async (text: string) => {
         await actions.upsertSearchHistory({ text, type });
-        queryClient.invalidateQueries({
+        queryClient.removeQueries({
           queryKey: ["listSearchHistory"] as const,
         });
       },
@@ -71,6 +72,7 @@ export const TableToolbar = ({
     queryKey: ["listSearchHistory", debouncedSearch, type] as const,
     queryFn: ({ queryKey: [_, text, type] }) =>
       actions.listSearchHistory({ text, type }),
+    placeholderData: identity,
   });
 
   const listSearchHistoryItems = useMemo(
