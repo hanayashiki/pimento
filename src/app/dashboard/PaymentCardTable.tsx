@@ -7,6 +7,7 @@ import { cx } from "classix";
 import dayjs from "dayjs";
 import { VscEdit } from "react-icons/vsc";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { useDebounceValue } from "usehooks-ts";
 
 import { PaymentCardDialog } from "./PaymentCardDialog";
 import { listPaymentCard } from "../_actions";
@@ -113,8 +114,10 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
 
   const orders = useOrders();
 
+  const [debouncedSearch] = useDebounceValue(search, 500);
+
   const passwordSearch: PasswordSearch = {
-    search,
+    search: debouncedSearch,
     orders: orders.orders,
   };
 

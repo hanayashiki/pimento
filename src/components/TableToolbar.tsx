@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Result } from "@monoid-dev/ts-utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import cx from "classix";
-import { MdOutlineDelete } from "react-icons/md";
+import { MdOutlineDelete, MdClose } from "react-icons/md";
 import { VscAdd } from "react-icons/vsc";
 import { usePopper } from "react-popper";
 import { useDebounceCallback, useDebounceValue } from "usehooks-ts";
@@ -50,9 +50,16 @@ export const TableToolbar = ({
   const [open, setOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
+  const queryClient = useQueryClient();
+
   const upsertSearchHistory = useDebounceCallback(
     useCallback(
-      (text: string) => actions.upsertSearchHistory({ text, type }),
+      async (text: string) => {
+        await actions.upsertSearchHistory({ text, type });
+        queryClient.invalidateQueries({
+          queryKey: ["listSearchHistory"] as const,
+        });
+      },
       [type],
     ),
     500,
@@ -116,11 +123,14 @@ export const TableToolbar = ({
         ref={setReferenceElement}
         type="text"
         placeholder="Search here"
-        className="input input-bordered w-full max-w-xs !outline-none focus:border-accent"
+        className="input input-bordered w-full sm:max-w-xs !outline-none focus:border-accent"
         value={search}
         onFocus={() => {
-          forceUpdate?.();
-          setOpen(true);
+          requestAnimationFrame(() => {
+            forceUpdate?.();
+            referenceElement?.select();
+            setOpen(true);
+          });
         }}
         onChange={(e) => {
           setOpen(true);
@@ -143,6 +153,7 @@ export const TableToolbar = ({
             if (focusedItem) {
               setOpen(false);
               setSearch(focusedItem.text);
+              upsertSearchHistory(focusedItem.text);
             }
           }
         }}
@@ -150,6 +161,7 @@ export const TableToolbar = ({
 
       <div
         ref={setPopperElement}
+        role="autocomplete"
         className={cx(
           (!open ||
             listSearchHistoryItems.every((item) => item.text === search)) &&
@@ -174,6 +186,7 @@ export const TableToolbar = ({
               onClick={() => {
                 setSearch(item.text);
                 setOpen(false);
+                upsertSearchHistory(item.text);
               }}
             >
               {item.text}
@@ -182,18 +195,32 @@ export const TableToolbar = ({
         </div>
 
         <button
-          className="mt-[0.25rem] float-right"
+          className="mt-[1.75rem] text-red-500"
           onClick={async () => {
             setOpen(false);
             await actions.deleteAllSearchHistory();
-            listSearchHistoryQuery.refetch();
+            queryClient.invalidateQueries({
+              queryKey: ["listSearchHistory"] as const,
+            });
           }}
         >
           <MdOutlineDelete />
         </button>
+
+        <button
+          className="mt-[1.75rem] float-right"
+          onClick={async () => {
+            setOpen(false);
+          }}
+        >
+          <MdClose />
+        </button>
       </div>
 
-      <button className="hover:text-primary" onClick={() => onClickAdd()}>
+      <button
+        className="hover:text-primary [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden"
+        onClick={() => onClickAdd()}
+      >
         <VscAdd />
       </button>
     </div>

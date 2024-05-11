@@ -17,7 +17,7 @@ const Tabs = () => {
 
   return (
     <div className="flex flex-col flex-1 flex-shrink overflow-hidden min-w-0">
-      <div className="text-sm breadcrumbs p-4">
+      <div className="text-sm breadcrumbs p-4 [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden sm:!block">
         <ul>
           <li>
             <a href="/">Top</a>
@@ -26,7 +26,7 @@ const Tabs = () => {
         </ul>
       </div>
 
-      <div className="tabs">
+      <div className="tabs [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden sm:!block">
         {passwordDefinitions.map((passwordDefinition) => (
           <Link
             key={passwordDefinition.name}

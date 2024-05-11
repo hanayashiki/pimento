@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { cx } from "classix";
 import dayjs from "dayjs";
 import { VscEdit } from "react-icons/vsc";
+import { useDebounceValue } from "usehooks-ts";
 
 import { AccountPasswordDialog } from "./AccountPasswordDialog";
 import { listAccountPassword } from "../_actions";
@@ -25,8 +26,10 @@ const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
 
   const orders = useOrders();
 
+  const [debouncedSearch] = useDebounceValue(search, 500);
+
   const passwordSearch: PasswordSearch = {
-    search,
+    search: debouncedSearch,
     orders: orders.orders,
   };
 
