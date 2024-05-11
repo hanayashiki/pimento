@@ -254,3 +254,37 @@ export const PasswordSearch = z.object({
 });
 
 export type PasswordSearch = z.infer<typeof PasswordSearch>;
+
+export const SearchHistoryDO = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  text: z.string(),
+  type: z.string(),
+  last_used: z.string().datetime(),
+});
+
+export type SearchHistoryDO = z.infer<typeof SearchHistoryDO>;
+
+export const UpsertSearchHistory = SearchHistoryDO.pick({
+  text: true,
+  type: true,
+});
+
+export type UpsertSearchHistory = z.infer<typeof UpsertSearchHistory>;
+
+export const SearchHistoryModel = defineModel({
+  name: "SearchHistory",
+  do: SearchHistoryDO,
+  pk: "id",
+  uniqueIndices: [],
+  fks: {
+    user_id: UserModel,
+  },
+});
+
+export const ListSearchHistoryQuery = SearchHistoryDO.pick({
+  text: true,
+  type: true,
+});
+
+export type ListSearchHistoryQuery = z.infer<typeof ListSearchHistoryQuery>;

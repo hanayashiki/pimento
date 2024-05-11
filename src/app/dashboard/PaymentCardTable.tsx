@@ -134,6 +134,7 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
       )}
     >
       <TableToolbar
+        type="PaymentCard"
         search={search}
         setSearch={setSearch}
         onClickAdd={() => setAddOpen(true)}

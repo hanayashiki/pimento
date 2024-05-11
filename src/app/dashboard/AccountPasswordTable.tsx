@@ -46,6 +46,7 @@ const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
       )}
     >
       <TableToolbar
+        type="AccountPassword"
         search={search}
         setSearch={setSearch}
         onClickAdd={() => setAddOpen(true)}

@@ -249,7 +249,8 @@ export class Storage {
     const rawObject = await this.kv.hgetall(
       StorageHelpers.getPkKeyName(model, pkValue),
     );
-    return model.do.parse(autoDeserializeRawObject(rawObject));
+    const object = autoDeserializeRawObject(rawObject);
+    return object === null ? object : model.do.parse(object);
   }
 
   async readObjectByIndex<S extends ZodAnyObject>(

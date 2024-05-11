@@ -25,8 +25,11 @@ import {
   UpdateAccountPassword,
   CreatePaymentCard,
   UpdatePaymentCard,
+  UpsertSearchHistory,
+  ListSearchHistoryQuery,
 } from "@/lib/models";
 import { PasswordService } from "@/lib/server/PasswordService";
+import { SearchHistoryService } from "@/lib/server/SearchHistoryService";
 import { Service } from "@/lib/server/Service";
 import { UserService } from "@/lib/server/UserService";
 
@@ -230,5 +233,35 @@ export const deletePaymentCard = createAction(
     const passwordService = Service.get(PasswordService);
 
     return await passwordService.deletePaymentCard(user, id);
+  },
+);
+
+export const upsertSearchHistory = createAction(
+  { input: UpsertSearchHistory },
+  async (input) => {
+    const user = await requireUser();
+    const searchHistoryService = Service.get(SearchHistoryService);
+
+    return await searchHistoryService.upsert(user, input);
+  },
+);
+
+export const listSearchHistory = createAction(
+  { input: ListSearchHistoryQuery },
+  async (input) => {
+    const user = await requireUser();
+    const searchHistoryService = Service.get(SearchHistoryService);
+
+    return await searchHistoryService.list(user, input);
+  },
+);
+
+export const deleteAllSearchHistory = createAction(
+  { input: z.void() },
+  async () => {
+    const user = await requireUser();
+    const searchHistoryService = Service.get(SearchHistoryService);
+
+    return await searchHistoryService.deleteAll(user);
   },
 );
