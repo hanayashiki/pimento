@@ -218,7 +218,7 @@ export const TableToolbar = ({
       </div>
 
       <button
-        className="hover:text-primary [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden"
+        className="hover:text-primary [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden sm:!block"
         onClick={() => onClickAdd()}
       >
         <VscAdd />
