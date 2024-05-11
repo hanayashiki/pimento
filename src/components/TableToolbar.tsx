@@ -136,8 +136,6 @@ export const TableToolbar = ({
           setOpen(true);
           setSearch(e.target.value);
           forceUpdate?.();
-
-          upsertSearchHistory(e.target.value);
         }}
         onKeyDown={(e) => {
           if (e.key === "ArrowDown") {
