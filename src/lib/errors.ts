@@ -17,7 +17,7 @@ export type AppErrors = z.infer<typeof AppErrors>;
 export const errorOfFormError = <Schema>(
   message: string,
   errors: ZodFormattedError<Schema>,
-): { code: "FORM_ERROR"; errors: ZodFormattedError<Schema> } & AppErrors => {
+): AppErrors => {
   return {
     code: "FORM_ERROR",
     message,
