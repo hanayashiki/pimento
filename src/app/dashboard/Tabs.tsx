@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation";
 import AccountPasswordTable from "./AccountPasswordTable";
 import PaymentCardTable from "./PaymentCardTable";
 import TextPasswordTable from "./TextPasswordTable";
-import { RelatedLinks } from "@/components/RelatedLinks";
 import { passwordDefinitions } from "@/lib/models";
 
 const Tabs = () => {
@@ -17,16 +16,7 @@ const Tabs = () => {
 
   return (
     <div className="flex flex-col flex-1 flex-shrink overflow-hidden min-w-0">
-      <div className="text-sm breadcrumbs p-4 [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden sm:!block">
-        <ul>
-          <li>
-            <a href="/">Top</a>
-          </li>
-          <li className="text-accent font-bold">My Secrets</li>
-        </ul>
-      </div>
-
-      <div className="tabs [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden sm:!block">
+      <div className="tabs px-[1rem] pt-[0.75rem] [html:has(input:focus)_&]:hidden [html:has([role=autocomplete]:not(.hidden))_&]:hidden sm:!block">
         {passwordDefinitions.map((passwordDefinition) => (
           <Link
             key={passwordDefinition.name}
@@ -47,9 +37,6 @@ const Tabs = () => {
         <PaymentCardTable active={activeTab === "PaymentCard"} />
 
         <div className="flex-1" />
-        <div className="pt-3 sm:py-6 px-2 flex justify-center sm:justify-start">
-          <RelatedLinks />
-        </div>
       </div>
     </div>
   );

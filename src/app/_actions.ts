@@ -33,7 +33,7 @@ import { SearchHistoryService } from "@/lib/server/SearchHistoryService";
 import { Service } from "@/lib/server/Service";
 import { UserService } from "@/lib/server/UserService";
 
-export const getUser = cache(() =>
+export const getUser = cache(async () =>
   pipe(cookies().get("token")?.value, (token) =>
     token ? Service.get(UserService).getMeByToken(token) : null,
   ),
