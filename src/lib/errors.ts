@@ -26,6 +26,8 @@ export const errorOfFormError = <Schema>(
 };
 
 export class AppError extends Error {
+  name = "AppError";
+
   constructor(public appError: AppErrors) {
     super();
   }
