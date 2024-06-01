@@ -49,6 +49,7 @@ export const TableToolbar = ({
   );
 
   const [open, setOpen] = useState(false);
+  const lastOpen = useMemo(() => Date.now(), [open]);
   const [focusedIndex, setFocusedIndex] = useState(0);
 
   const queryClient = useQueryClient();
@@ -95,7 +96,7 @@ export const TableToolbar = ({
 
   useEffect(() => {
     function handleClick(ev: MouseEvent) {
-      if (ev.target instanceof HTMLElement) {
+      if (Date.now() - lastOpen > 500 && ev.target instanceof HTMLElement) {
         if (
           !referenceElement?.contains(ev.target) &&
           !popperElement?.contains(ev.target)
@@ -113,7 +114,7 @@ export const TableToolbar = ({
         window.removeEventListener("click", handleClick);
       };
     }
-  }, [referenceElement, popperElement, search, open]);
+  }, [referenceElement, popperElement, search, open, lastOpen]);
 
   useEffect(() => {
     if (focusedIndex > listSearchHistoryItems.length - 1) {
