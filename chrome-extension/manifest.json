@@ -1,17 +1,10 @@
 {
-  "name": "Hello Extensions",
-  "description": "Base Level Extension",
+  "name": "Pimento",
+  "description": "A small plugin that instantly accesses Pimento",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
-    "default_popup": "hello.html",
-    "default_icon": "hello_extensions.png"
-  },
-  "permissions": [
-    "webRequest",
-    "declarativeNetRequest"
-  ],
-  "host_permissions": [
-    "https://pimento.cwang.io/*"
-  ]
+    "default_popup": "popup.html",
+    "default_icon": "apple-icon.png"
+  }
 }
