@@ -62,7 +62,8 @@ export const login = createAction({ input: LoginUser }, async (data) => {
     name: "token",
     value: loginResponse.token,
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "lax",
+    secure: true,
     expires: dayjs().add(14, "day").toDate(),
   });
 
