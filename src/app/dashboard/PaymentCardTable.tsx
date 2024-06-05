@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { VscEdit } from "react-icons/vsc";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { useDebounceValue } from "usehooks-ts";
+import { z } from "zod";
 
 import { PaymentCardDialog } from "./PaymentCardDialog";
 import { listPaymentCard } from "../_actions";
@@ -15,6 +16,7 @@ import { ClientOnly } from "@/components/ClientOnly";
 import { OrderButton } from "@/components/OrderButton";
 import { TableToolbar } from "@/components/TableToolbar";
 import { useDialogKey } from "@/lib/client/useDialogKey";
+import { useLocalStorageState } from "@/lib/client/useLocalStorageState";
 import { useOrders } from "@/lib/client/useOrders";
 import { useSensitiveQuery } from "@/lib/client/useSensitive";
 import { formatPan, paymentCardMetaMap } from "@/lib/data/paymentCard";
@@ -107,7 +109,11 @@ const CardNumberDisplay = ({
 };
 
 const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useLocalStorageState(
+    "PaymentCardTable.search",
+    z.string(),
+    "",
+  );
 
   const [editTarget, setEditTarget] = useState<PaymentCardDO>();
   const [editOpen, setEditOpen] = useState(false);

@@ -7,6 +7,7 @@ import { cx } from "classix";
 import dayjs from "dayjs";
 import { VscEdit, VscAccount, VscLock, VscEye } from "react-icons/vsc";
 import { useDebounceValue } from "usehooks-ts";
+import { z } from "zod";
 
 import { AccountPasswordDialog } from "./AccountPasswordDialog";
 import { listAccountPassword } from "../_actions";
@@ -15,6 +16,7 @@ import { OrderButton } from "@/components/OrderButton";
 import { SensitiveDisplay } from "@/components/SensitiveDisplay";
 import { TableToolbar } from "@/components/TableToolbar";
 import { useDialogKey } from "@/lib/client/useDialogKey";
+import { useLocalStorageState } from "@/lib/client/useLocalStorageState";
 import { useOrders } from "@/lib/client/useOrders";
 import { useSensitiveQuery } from "@/lib/client/useSensitive";
 import { AccountPasswordDO, PasswordSearch } from "@/lib/models";
@@ -55,7 +57,11 @@ const MobileAccountPasswordDisplay: React.FC<{
 };
 
 const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useLocalStorageState(
+    "AccountPasswordTable.search",
+    z.string(),
+    "",
+  );
 
   const [editTarget, setEditTarget] = useState<AccountPasswordDO>();
   const [editOpen, setEditOpen] = useState(false);
