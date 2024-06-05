@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 
 import { z } from "zod";
 
@@ -24,7 +24,7 @@ export const useLocalStorageState = <S extends z.ZodTypeAny>(
   const [state, _setState] = useState<S>(defaultValue);
 
   useEffect(() => {
-    _setState(load());
+    startTransition(() => _setState(load()));
   }, []);
 
   const setState = (value: S) => {
