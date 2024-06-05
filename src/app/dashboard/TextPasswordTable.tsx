@@ -41,8 +41,8 @@ const TextPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
   };
 
   const { data, isPlaceholderData } = useQuery({
-    queryKey: ["listTextPassword", passwordSearch],
-    queryFn: () => listTextPassword(passwordSearch),
+    queryKey: ["listTextPassword", passwordSearch] as const,
+    queryFn: ({ queryKey: [_, q] }) => listTextPassword(q),
     placeholderData: (data) => data,
   });
 

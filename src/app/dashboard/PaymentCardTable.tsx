@@ -129,8 +129,8 @@ const PaymentCardTable: React.FC<{ active: boolean }> = ({ active }) => {
   };
 
   const { data, isPlaceholderData } = useQuery({
-    queryKey: ["listPaymentCard", passwordSearch],
-    queryFn: () => listPaymentCard(passwordSearch),
+    queryKey: ["listPaymentCard", passwordSearch] as const,
+    queryFn: ({ queryKey: [_, q] }) => listPaymentCard(q),
     placeholderData: (data) => data,
   });
 

@@ -77,8 +77,8 @@ const AccountPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
   };
 
   const { data, isPlaceholderData } = useQuery({
-    queryKey: ["listAccountPassword", passwordSearch],
-    queryFn: () => listAccountPassword(passwordSearch),
+    queryKey: ["listAccountPassword", passwordSearch] as const,
+    queryFn: ({ queryKey: [_, q] }) => listAccountPassword(q),
     placeholderData: (data) => data,
   });
 
