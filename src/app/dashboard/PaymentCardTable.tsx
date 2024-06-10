@@ -4,8 +4,9 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import { cx } from "classix";
+import copy from "copy-to-clipboard";
 import dayjs from "dayjs";
-import { VscEdit } from "react-icons/vsc";
+import { VscEdit, VscCopy } from "react-icons/vsc";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { useDebounceValue } from "usehooks-ts";
 import { z } from "zod";
@@ -21,6 +22,25 @@ import { useOrders } from "@/lib/client/useOrders";
 import { useSensitiveQuery } from "@/lib/client/useSensitive";
 import { formatPan, paymentCardMetaMap } from "@/lib/data/paymentCard";
 import { PasswordSearch, PaymentCardDO } from "@/lib/models";
+
+const CardNumberDisplayCopyButton = ({ data }: { data?: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <button
+      onClick={() => {
+        data && copy(data) && setCopied(true);
+
+        setTimeout(() => {
+          setCopied(false);
+        }, 100);
+      }}
+      className={cx("transition-colors", copied && "text-secondary")}
+    >
+      <VscCopy />
+    </button>
+  );
+};
 
 const CardNumberDisplay = ({
   visible,
@@ -40,7 +60,7 @@ const CardNumberDisplay = ({
     password.brand !== "Other" ? paymentCardMetaMap[password.brand] : undefined;
 
   return (
-    <div className="pt-[5px] pr-[20px]">
+    <div className="sm:pt-[5px] sm:pr-[20px]">
       <div className="flex">
         {meta && (
           <img
@@ -66,7 +86,7 @@ const CardNumberDisplay = ({
       </div>
 
       {visible && (
-        <div className="mt-[0.25rem] sm:text-sm">
+        <div className="mt-[1rem] sm:text-sm grid grid-cols-[1fr_auto] gap-3">
           <span
             className="sm:text-base text-lg"
             onDoubleClick={(e) => {
@@ -76,7 +96,8 @@ const CardNumberDisplay = ({
             {meta ? formatPan(0, pan ?? "", meta.rules)[1] : pan}
           </span>
 
-          <br />
+          <CardNumberDisplayCopyButton data={pan?.replaceAll(" ", "")} />
+
           <span
             onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
@@ -84,7 +105,9 @@ const CardNumberDisplay = ({
           >
             {expirationDate}
           </span>
-          <br />
+
+          <CardNumberDisplayCopyButton data={expirationDate} />
+
           <span
             onDoubleClick={(e) => {
               window.getSelection()?.selectAllChildren(e.currentTarget);
@@ -93,7 +116,7 @@ const CardNumberDisplay = ({
             {cardholder}
           </span>
 
-          <br />
+          <CardNumberDisplayCopyButton data={cardholder} />
 
           <span
             onDoubleClick={(e) => {
@@ -102,6 +125,8 @@ const CardNumberDisplay = ({
           >
             {cvv}
           </span>
+
+          <CardNumberDisplayCopyButton data={cvv} />
         </div>
       )}
     </div>
