@@ -113,7 +113,7 @@ const TextPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
                     </a>
                   </td>
                   <td>{password.name}</td>
-                  <td className="min-w-[100px]">
+                  <td className="min-w-[100px] whitespace-pre-wrap">
                     <SensitiveDisplay
                       visible={visibleIds.includes(password.id)}
                       onChangeVisible={() => {
@@ -124,6 +124,7 @@ const TextPasswordTable: React.FC<{ active: boolean }> = ({ active }) => {
                         );
                       }}
                       sensitive={password.text}
+                      newLineAfterCopy
                     />
                   </td>
                   <td>
