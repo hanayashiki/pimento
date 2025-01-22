@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "env:dev": "NODE_OPTIONS='-r dotenv/config -r ./scripts/polyfill.ts' DOTENV_CONFIG_PATH='./.vercel/.env.development.local'"
+    "env:dev": "NODE_OPTIONS='-r dotenv/config -r ./scripts/polyfill.ts' DOTENV_CONFIG_PATH='./.vercel/.env.development.local'",
+    "env:home": "NODE_OPTIONS='-r dotenv/config -r ./scripts/polyfill.ts' DOTENV_CONFIG_PATH='.env.home.local'"
   },
   "devDependencies": {
     "@types/gravatar": "^1.8.6",
